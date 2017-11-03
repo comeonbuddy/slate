@@ -1,0 +1,617 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Instant Access Partner - API Reference</title>
+
+    <style>
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .cd {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all.js"></script>
+  </head>
+
+  <body class="index" data-languages="[&quot;javascript&quot;,&quot;php&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" alt="Navbar" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <a href="http://www.instantaccess.io" ><img src="images/logo.png" class="logo" alt="Logo" /></a>
+        <div class="lang-selector">
+              <a href="#" data-language-name="javascript">javascript</a>
+              <a href="#" data-language-name="php">php</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <div id="toc" class="toc-list-h1">
+          <li>
+            <a href="#ia-documentation" class="toc-h1 toc-link" data-title="IA Documentation">IA Documentation</a>
+          </li>
+          <li>
+            <a href="#ia-partner-integration" class="toc-h1 toc-link" data-title="IA Partner Integration">IA Partner Integration</a>
+          </li>
+          <li>
+            <a href="#handling-ia-authentication" class="toc-h1 toc-link" data-title="Handling IA Authentication">Handling IA Authentication</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#success" class="toc-h2 toc-link" data-title="Handling IA Authentication">Success</a>
+                  </li>
+                  <li>
+                    <a href="#denied-or-failed" class="toc-h2 toc-link" data-title="Handling IA Authentication">Denied or Failed</a>
+                  </li>
+                  <li>
+                    <a href="#timeout" class="toc-h2 toc-link" data-title="Handling IA Authentication">Timeout</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#callback-implementation" class="toc-h1 toc-link" data-title="Callback Implementation">Callback Implementation</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#callback" class="toc-h2 toc-link" data-title="Callback Implementation">Callback</a>
+                  </li>
+                  <li>
+                    <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="Callback Implementation">fetching token for this user from IA System</a>
+                  </li>
+                  <li>
+                    <a href="#fetch-user-token" class="toc-h2 toc-link" data-title="Callback Implementation">Fetch User Token</a>
+                  </li>
+              </ul>
+          </li>
+      </div>
+        <ul class="toc-footer">
+            <li><a href='http://instantaccess.io/partner'>Partner Sign Up</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='ia-documentation'>IA Documentation</h1>
+<p><img src="images/headerImg.svg" width="100%"/></p>
+
+<p>Before you start, you will need 2 keys<br/>
+- Client ID Key<br/>
+- Client Secret Key<br/><br/>
+Contact us at <a href="email:yo@instantaccess.io">yo@instantaccess.io</a> if you do not have these. You will need to provide us with a callback url to receive user info from our server.</p>
+<h1 id='ia-partner-integration'>IA Partner Integration</h1>
+<blockquote>
+<p>To integrate IA on your website, add this code snippet to your website:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="c">&lt;!--</span> <span class="nx">IA</span> <span class="nx">Authentication</span> <span class="o">--&gt;</span>
+  <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">client_id</span> <span class="o">=</span> <span class="s1">'IA_PARTNER_CLIENT_ID_KEY'</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">client_secret</span> <span class="o">=</span> <span class="s1">'IA_PARTNER_CLIENT_SECRET_KEY'</span><span class="p">;</span>
+
+      <span class="kd">function</span> <span class="nx">successIA</span><span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Handle successLogin in IA</span>
+        <span class="c1">// Example: window.location = 'IACompleteRegisteration.php?iaUser='+usernameOrEmail</span>
+      <span class="p">}</span>
+
+      <span class="kd">function</span> <span class="nx">deniedIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="kd">function</span> <span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+
+
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'ia-framework-login'</span><span class="p">).</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'http://52.26.104.251/api/partner/authorize/view?client_id='</span><span class="o">+</span><span class="nx">client_id</span><span class="o">+</span><span class="s1">'&amp;client_secret='</span><span class="o">+</span><span class="nx">client_secret</span><span class="p">;</span>
+      <span class="c1">//listen to ia back</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">origin</span> <span class="o">!==</span> <span class="s1">'http://52.26.104.251'</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'alert'</span><span class="p">)</span>
+          <span class="nx">alert</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'closeframe'</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-btn"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s2">"block"</span><span class="p">;</span>
+          <span class="nx">fade</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-framework-login"</span><span class="p">));</span>
+          <span class="c1">//document.getElementById("ia-framework-login").style.display = "none";</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'auth'</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">switch</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="s1">'success'</span><span class="p">:</span>
+              <span class="nx">successIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">usernameOrEmail</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s1">'denied'</span><span class="p">:</span>
+              <span class="nx">deniedIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s1">'timeout'</span><span class="p">:</span>
+              <span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span><span class="kc">false</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">iaButtonClicked</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">unfade</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-framework-login"</span><span class="p">));</span>
+      <span class="c1">//document.getElementById("ia-framework-login").style.display = "block";</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-btn"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s2">"hidden"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">fade</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+      <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">){</span>
+          <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">'none'</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">op</span><span class="p">;</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">;</span>
+        <span class="nx">op</span> <span class="o">-=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+      <span class="p">},</span> <span class="mi">10</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">unfade</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+      <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">'block'</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">){</span>
+          <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">op</span><span class="p">;</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">;</span>
+        <span class="nx">op</span> <span class="o">+=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+      <span class="p">},</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display: inline-block; position: relative;"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"button"</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">"iaButtonClicked()"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-btn"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"background-color: #4A4A4A; border-width: 0; padding: 0; width: 56px; height: 56px; border-radius:10px;"</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"http://52.26.104.251/upload/image/whitelogo.svg"</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-framework-login"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">""</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"170"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"215"</span> <span class="nx">frameBorder</span><span class="o">=</span><span class="s2">"0"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display:none; border-radius:10px; z-index: 1000; position: absolute; left: 0px; bottom: 0px;"</span><span class="o">&gt;&lt;</span><span class="sr">/iframe</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+    <span class="err">#</span><span class="nx">ia</span><span class="o">-</span><span class="nx">btn</span><span class="p">:</span><span class="nx">focus</span> <span class="p">{</span>
+      <span class="nx">outline</span><span class="o">-</span><span class="nx">width</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="err">#</span><span class="nx">ia</span><span class="o">-</span><span class="nx">btn</span><span class="p">:</span><span class="nx">hover</span> <span class="p">{</span>
+      <span class="nl">opacity</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">;</span>
+      <span class="nl">cursor</span><span class="p">:</span> <span class="nx">pointer</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span>  <span class="c">&lt;!--</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">login</span> <span class="kd">with</span> <span class="nx">IA</span> <span class="o">--&gt;</span>
+</code></pre>
+<p>Once you are ready, simple add the <code>code snippet</code> where you want IA button to appear.</p>
+
+<aside class="notice">
+You must replace <code>IA_PARTNER_CLIENT_ID_KEY</code> with your IA partner client id key.
+</aside>
+
+<aside class="notice">
+You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner client secret key.
+</aside>
+<h1 id='handling-ia-authentication'>Handling IA Authentication</h1>
+<p>IA System will call one of this three methods when finish IA Authentication according to the status (success, denied or fail, timeout)</p>
+<h2 id='success'>Success</h2><pre class="highlight javascript tab-javascript"><code>    <span class="kd">function</span> <span class="nx">successIA</span><span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Handle successLogin in IA</span>
+      <span class="c1">// Example: window.location = 'IACompleteRegisteration.php?iaUser='+usernameOrEmail</span>
+    <span class="p">}</span>
+</code></pre>
+<p>This method will be called when user finished IA Authentication successfully and approved the request on their IA app.</p>
+
+<p>Simply implement this method and continue your user flow, IA will provide all approved user info to your callback endpoint with the username and user email before calling this method. You can implement the callback to save these data for later use. Please refer to &#39;Callback Implementation Section&#39;.</p>
+
+<p>You can fetch user data using ajax or reditect to another page in this method and continue your user process. All authorized user info must be saved now on your system via your callback url.</p>
+<h3 id='query-parameters'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>usernameOrEmail</td>
+<td>This is the username or email that the user used it to authenticate your service via IA System.</td>
+</tr>
+</tbody></table>
+<h2 id='denied-or-failed'>Denied or Failed</h2><pre class="highlight javascript tab-javascript"><code>      <span class="kd">function</span> <span class="nx">deniedIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+</code></pre>
+<p>This method will be called if your website user denied the IA Authentication request on the IA App or the request fail for any other reason.</p>
+
+<p>By default, this method alerts the user with a failing message, however you can change this to suit your need.</p>
+<h3 id='query-parameters-2'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>message</td>
+<td>It contains the reason of failure if the user denied the process, ...etc.</td>
+</tr>
+</tbody></table>
+<h2 id='timeout'>Timeout</h2><pre class="highlight javascript tab-javascript"><code>      <span class="kd">function</span> <span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+</code></pre>
+<p>This method will be called if user failed to respond to IA request over IA App.</p>
+
+<p>By default, this method alerts the user with a timeout message.</p>
+<h3 id='query-parameters-3'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>message</td>
+<td>It contains timeout message.</td>
+</tr>
+</tbody></table>
+<h1 id='callback-implementation'>Callback Implementation</h1><h2 id='callback'>Callback</h2><pre class="highlight php tab-php"><code>$authorizationCode = $_GET['code'];
+$state = $_GET['state'];
+$stateArr = explode("@@", $state);
+$username = $stateArr[0];
+$email = $stateArr[1];
+</code></pre>
+<p>When user approved the request over IA App, the Callback URL will be called with two parameters.</p>
+<h3 id='http-request'>HTTP Request</h3>
+<p><code>GET http://yourwebsite.com/yourCallBackurl?code={AUTHORIZATION_CODE}&amp;state={username}@@{email}</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>the Authorization Code that used to fetch the user’s token from IA</td>
+</tr>
+<tr>
+<td>state</td>
+<td>this string contains the username and email concatenated with &#39;@@&#39;, you can split them and use them.</td>
+</tr>
+</tbody></table>
+<h2 id='fetching-token-for-this-user-from-ia-system'>fetching token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
+$curl = curl_init('http://instantaccess.io/api/oauth/token');
+
+// SET API request type as post
+curl_setopt($curl, CURLOPT_POST, 1);
+
+// Returns the data/output as a string instead of raw data
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array('client_id'=&gt;'IA_PARTNER_CLIENT_ID_KEY',
+                                                              'client_secret'=&gt;'IA_PARTNER_CLIENT_SECRET_KEY',
+                                                              'code'=&gt;'your Authorization Code that provided in the previous step',
+                                                              'redirect_uri' =&gt; 'your callback url',
+                                                              'grant_type'=&gt;'authorization_code')));
+
+$result = curl_exec($curl);
+
+curl_close($curl);
+
+if($result !== FALSE) {
+  $data = json_decode($result,true);
+  $user_token = $data["access_token"];
+}
+</code></pre>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"User data items retrieved successfully"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:[</span><span class="w">
+      </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+01111111111111"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test@test.com"</span><span class="p">,</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)</p>
+
+<aside class="success">
+This token is required everytime your system requests user info from IA. 
+</aside>
+<h3 id='http-request-2'>HTTP Request</h3>
+<p><code>POST http://instantaccess.io/api/oauth/token?code={AUTHORIZATION_CODE}&amp;state={username}@@{email}</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>client_id</td>
+<td>your IA_PARTNER_CLIENT_ID_KEY</td>
+</tr>
+<tr>
+<td>client_secret</td>
+<td>your IA_PARTNER_CLIENT_SECRET_KEY</td>
+</tr>
+<tr>
+<td>code</td>
+<td>your Authorization Code that provided in the previous step</td>
+</tr>
+<tr>
+<td>redirect_uri</td>
+<td>your callback url</td>
+</tr>
+<tr>
+<td>grant_type</td>
+<td>always with string value &#39;authorization_code&#39;</td>
+</tr>
+</tbody></table>
+<h2 id='fetch-user-token'>Fetch User Token</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
+  $data = json_decode($result,true);
+  $user_token = $data["access_token"];
+}
+
+//setup the request, you can also use CURLOPT_URL
+$curl = curl_init('http://instantaccess.io/api/public/user');
+
+// Returns the data/output as a string instead of raw data
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+//Set your auth headers
+curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $user_token
+    ));
+
+$result = curl_exec($curl);
+
+curl_close($curl);
+
+if($result !== FALSE) {
+
+  $json = json_decode($result);
+  $data = $json-&gt;data
+
+  // Save it in your DB is the best choice :)
+  file_put_contents('ANY FILE PATH', json_encode($data));
+}
+</code></pre>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"User data items retrieved successfully"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:[</span><span class="w">
+      </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+01111111111111"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test@test.com"</span><span class="p">,</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Please use the user token to fetch user info from IA system. You can process these info as you usually do (e.g. save in database).</p>
+
+<aside class="success">
+You can fetch user info with the user token via this api call at anytime.
+</aside>
+<h3 id='http-request-3'>HTTP Request</h3>
+<p><code>GET http://instantaccess.io/api/public/user</code></p>
+
+<p>NO Parameters here just set the Headers as following</p>
+
+<table><thead>
+<tr>
+<th>Header</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Content-Type</td>
+<td>&#39;application/json&#39;</td>
+</tr>
+<tr>
+<td>Authorization</td>
+<td>&#39;Bearer {access_token that provided from last step}&#39;</td>
+</tr>
+</tbody></table>
+
+<p>The data will retrieved in json string as following</p>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="javascript">javascript</a>
+                <a href="#" data-language-name="php">php</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
