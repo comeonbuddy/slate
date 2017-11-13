@@ -209,7 +209,7 @@
       </span>
     </a>
     <div class="toc-wrapper">
-      <a href="http://www.instantaccess.io" ><img src="images/logo.png" class="logo" alt="Logo" /></a>
+      <img src="images/logo.png" class="logo" alt="Logo" />
         <div class="lang-selector">
               <a href="#" data-language-name="javascript">javascript</a>
               <a href="#" data-language-name="php">php</a>
@@ -229,13 +229,13 @@
             <a href="#handling-ia-authentication" class="toc-h1 toc-link" data-title="Handling IA Authentication">Handling IA Authentication</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#success" class="toc-h2 toc-link" data-title="Handling IA Authentication">Success</a>
+                    <a href="#success" class="toc-h2 toc-link" data-title="Success">Success</a>
                   </li>
                   <li>
-                    <a href="#denied-or-failed" class="toc-h2 toc-link" data-title="Handling IA Authentication">Denied or Failed</a>
+                    <a href="#denied-or-failed" class="toc-h2 toc-link" data-title="Denied or Failed">Denied or Failed</a>
                   </li>
                   <li>
-                    <a href="#timeout" class="toc-h2 toc-link" data-title="Handling IA Authentication">Timeout</a>
+                    <a href="#timeout" class="toc-h2 toc-link" data-title="Timeout">Timeout</a>
                   </li>
               </ul>
           </li>
@@ -243,13 +243,13 @@
             <a href="#callback-implementation" class="toc-h1 toc-link" data-title="Callback Implementation">Callback Implementation</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#callback" class="toc-h2 toc-link" data-title="Callback Implementation">Callback</a>
+                    <a href="#callback" class="toc-h2 toc-link" data-title="Callback">Callback</a>
                   </li>
                   <li>
-                    <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="Callback Implementation">fetching token for this user from IA System</a>
+                    <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="fetching token for this user from IA System">fetching token for this user from IA System</a>
                   </li>
                   <li>
-                    <a href="#fetch-user-token" class="toc-h2 toc-link" data-title="Callback Implementation">Fetch User Token</a>
+                    <a href="#fetch-user-token" class="toc-h2 toc-link" data-title="Fetch User Token">Fetch User Token</a>
                   </li>
               </ul>
           </li>
@@ -292,10 +292,10 @@ Contact us at <a href="email:yo@instantaccess.io">yo@instantaccess.io</a> if you
       <span class="p">}</span>
 
 
-      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'ia-framework-login'</span><span class="p">).</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'http://52.26.104.251/api/partner/authorize/view?client_id='</span><span class="o">+</span><span class="nx">client_id</span><span class="o">+</span><span class="s1">'&amp;client_secret='</span><span class="o">+</span><span class="nx">client_secret</span><span class="p">;</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'ia-framework-login'</span><span class="p">).</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://dashboard.instantaccess.io/api/partner/authorize/view?client_id='</span><span class="o">+</span><span class="nx">client_id</span><span class="o">+</span><span class="s1">'&amp;client_secret='</span><span class="o">+</span><span class="nx">client_secret</span><span class="p">;</span>
       <span class="c1">//listen to ia back</span>
       <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">origin</span> <span class="o">!==</span> <span class="s1">'http://52.26.104.251'</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">origin</span> <span class="o">!==</span> <span class="s1">'https://dashboard.instantaccess.io'</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
         <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'alert'</span><span class="p">)</span>
           <span class="nx">alert</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
         <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'closeframe'</span><span class="p">)</span> <span class="p">{</span>
@@ -353,7 +353,7 @@ Contact us at <a href="email:yo@instantaccess.io">yo@instantaccess.io</a> if you
   <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
 </span>  <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display: inline-block; position: relative;"</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"button"</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">"iaButtonClicked()"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-btn"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"background-color: #4A4A4A; border-width: 0; padding: 0; width: 56px; height: 56px; border-radius:10px;"</span><span class="o">&gt;</span>
-      <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"http://52.26.104.251/upload/image/whitelogo.svg"</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"https://dashboard.instantaccess.io/upload/image/whitelogo.svg"</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
 </span>    <span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-framework-login"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">""</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"170"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"215"</span> <span class="nx">frameBorder</span><span class="o">=</span><span class="s2">"0"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display:none; border-radius:10px; z-index: 1000; position: absolute; left: 0px; bottom: 0px;"</span><span class="o">&gt;&lt;</span><span class="sr">/iframe</span><span class="err">&gt;
 </span>  <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
