@@ -46,10 +46,10 @@ Contact us at [yo@instantaccess.io](email:yo@instantaccess.io) if you do not hav
       }
 
 
-      document.getElementById('ia-framework-login').src = 'http://52.26.104.251/api/partner/authorize/view?client_id='+client_id+'&client_secret='+client_secret;
+      document.getElementById('ia-framework-login').src = 'https://dashboard.instantaccess.io/api/partner/authorize/view?client_id='+client_id+'&client_secret='+client_secret;
       //listen to ia back
       window.addEventListener('message',function(event) {
-        if(event.origin !== 'http://52.26.104.251') return;
+        if(event.origin !== 'https://dashboard.instantaccess.io') return;
         if(event.data.action === 'alert')
           alert(event.data.message);
         else if(event.data.action === 'closeframe') {
@@ -107,7 +107,7 @@ Contact us at [yo@instantaccess.io](email:yo@instantaccess.io) if you do not hav
   </script>
   <div style="display: inline-block; position: relative;">
     <button type="button" onclick="iaButtonClicked()" id="ia-btn" style="background-color: #4A4A4A; border-width: 0; padding: 0; width: 56px; height: 56px; border-radius:10px;">
-      <img src="http://52.26.104.251/upload/image/whitelogo.svg"/>
+      <img src="https://dashboard.instantaccess.io/upload/image/whitelogo.svg"/>
     </button>
     <iframe id="ia-framework-login" src="" width="170" height="215" frameBorder="0" style="display:none; border-radius:10px; z-index: 1000; position: absolute; left: 0px; bottom: 0px;"></iframe>
   </div>
