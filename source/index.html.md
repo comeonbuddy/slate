@@ -323,7 +323,7 @@ const styles = {
 Once you are ready, simply add the `code snippet` where you want IA button to appear.
 
 <aside class="notice">
-Please note: IA button will only work under the domain name you registered with us. If your dev environment is under a different domain, please contact us via our <a href="http://bit.ly/2mt0yD0" target="_blank">dev slack channel</a>
+Please note: IA button will only work under the domain name you registered with us. If your dev environment is under a different domain, please contact us via our <a href="http://bit.ly/2yhKXXs" target="_blank">dev slack channel</a>
 </aside>
 
 <aside class="notice">
