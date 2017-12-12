@@ -2,8 +2,9 @@
 title: Instant Access Partner - API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - javascript
-  - php
+  - javascript: JavaScript
+  - javascript--react: React
+  - php: PHP
 
 toc_footers:
   - <a href='http://instantaccess.io/partner'>Partner Sign Up</a>
@@ -123,8 +124,207 @@ Contact us at [yo@instantaccess.io](email:yo@instantaccess.io) if you do not hav
   <!-- End of login with IA -->
 ```
 
+```javascript--react
+> Step 1: IAButton React component source code - save this file as IAButton.js in your project
 
-Once you are ready, simple add the `code snippet` where you want IA button to appear.
+import React from "react";
+import PropTypes from 'prop-types';
+
+export default class IAButton extends React.Component {
+
+    constructor (props) {
+        super(props);
+        this.state = {
+            iaWhiteLogoSource: props.iaServer+'/upload/image/whitelogo.svg',
+            iaFrameSource: props.iaServer+'/api/partner/authorize/view?client_id='+props.clientId+'&client_secret='+props.clientSecret+(props.payment?('&payment='+props.payment):''),
+            iaButtonHovered: false,
+            iaButtonFocused: false,
+            iaButtonHidden: false,
+            iaFrameDisplayed: false,
+            iaFrameOpacity: 0.1,
+            iaFrameFilter: 'alpha(opacity=0)'
+        }
+    }
+
+    componentDidMount () {
+        window.addEventListener("message", this.handleIAMessage);
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener("message", this.handleIAMessage);
+    }
+
+    handleIAMessage = (event) => {
+        var eventOrigin = event.origin;
+        if(!this.props.iaServer.toLowerCase().startsWith("http")) {
+            if(eventOrigin.toLowerCase().startsWith("http:")) {
+                eventOrigin = eventOrigin.substr(5);
+            } else if(eventOrigin.toLowerCase().startsWith("https:")) {
+                eventOrigin = eventOrigin.substr(6);
+            }
+        }
+        if(eventOrigin !== this.props.iaServer) return;
+        if(event.data.action === 'alert') {
+            alert(event.data.message);
+        } else if(event.data.action === 'closeframe') {
+            this.setState({
+                iaBtnHidden: false
+            });
+            this.fadeIAFrame();
+        }
+        else if(event.data.action === 'auth') {
+            switch (event.data.status) {
+                case 'success':
+                    this.successIA(event.data.usernameOrEmail);
+                    break;
+                case 'denied':
+                    this.deniedIA(event.data.message);
+                    break;
+                case 'timeout':
+                    this.timeoutIA(event.data.message);
+                    break;
+            }
+        }
+    }
+
+    successIA (usernameOrEmail) {
+        // Handle successLogin in IA
+        this.props.successIA(usernameOrEmail);
+    }
+
+    deniedIA (message) {
+        if(this.props.notifyUser) {
+            alert(message);
+        }
+        this.props.deniedIA(message);
+    }
+
+    timeoutIA (message) {
+        if(this.props.notifyUser) {
+            alert(message);
+        }
+        this.props.timeoutIA(message);
+    }
+
+    iaButtonClicked () {
+        this.unfadeIAFrame();
+        this.setState({
+            iaBtnHidden: true
+        });
+    }
+
+    fadeIAFrame() {
+        var op = 1;  // initial opacity
+        var timer = setInterval(() => {
+            if (op <= 0.1){
+                clearInterval(timer);
+                this.setState({iaFrameDisplayed: false});
+            }
+            this.setState({
+                iaFrameOpacity: op,
+                iaFrameFilter: 'alpha(opacity=' + op * 100 + ')'
+            });
+            op -= op * 0.1;
+        }, 10);
+    }
+
+    unfadeIAFrame () {
+        var op = 0.1;  // initial opacity
+        this.setState({iaFrameDisplayed: true});
+        var timer = setInterval(() => {
+            if (op >= 1){
+                clearInterval(timer);
+            }
+            this.setState({
+                iaFrameOpacity: op,
+                iaFrameFilter: 'alpha(opacity=' + op * 100 + ')'
+            });
+            op += op * 0.1;
+        }, 5);
+    }
+
+    render() {
+        return (
+            <div style={styles.mainDiv}>
+                <button type="button"
+                        onClick={() => this.iaButtonClicked()}
+                        onMouseEnter={() => this.setState({iaButtonHovered: true})}
+                        onMouseLeave={() => this.setState({iaButtonHovered: false})}
+                        onFocus={() => this.setState({iaButtonFocused: true})}
+                        onBlur={() => this.setState({iaButtonFocused: false})}
+                        style={{...styles.iaBtn, ...{opacity: this.state.iaButtonHovered ? 0.9 : 1, outlineWidth: this.state.iaButtonFocused ? 0 : 'inherit', display: this.state.iaBtnHidden ? 'hidden' : 'block'}}}>
+                    <img src={this.state.iaWhiteLogoSource} />
+                </button>
+                <iframe src={this.state.iaFrameSource} width="170" height="215" frameBorder="0" style={{...styles.iaFrame, ...{opacity: this.state.iaFrameOpacity, filter: this.state.iaFrameFilter, display: this.state.iaFrameDisplayed ? 'block' : 'none'}}}/>
+            </div>
+        )
+    }
+};
+
+IAButton.propTypes = {
+    iaServer: PropTypes.string,
+    clientId: PropTypes.string.isRequired,
+    clientSecret: PropTypes.string.isRequired,
+    payment: PropTypes.string,
+    notifyUser: PropTypes.bool,
+    successIA: PropTypes.func.isRequired,
+    deniedIA: PropTypes.func.isRequired,
+    timeoutIA: PropTypes.func.isRequired
+};
+
+IAButton.defaultProps = {
+    notifyUser: true,
+    iaServer: '//dashboard.instantaccess.io'
+};
+
+const styles = {
+    mainDiv: {
+        display: 'inline-block',
+        position: 'relative'
+    },
+    iaBtn: {
+        backgroundColor: '#4A4A4A',
+        borderWidth: 0,
+        padding: 0,
+        width: 56,
+        height: 56,
+        borderRadius:10,
+        cursor: 'pointer'
+    },
+    iaFrame: {
+        display:'none',
+        borderRadius:10,
+        zIndex: 1000,
+        position: 'absolute',
+        left: 0,
+        bottom: 0
+    }
+};
+
+> End of Step 1
+
+
+> Step 2: Add IAButton component where you need
+
+  <IAButton clientId="IA_PARTNER_CLIENT_ID_KEY"
+            clientSecret="IA_PARTNER_CLIENT_SECRET_KEY"
+            notifyUser={false}
+            successIA={(usernameOrEmail) => IA_SUCCESS_HANDLER}
+            deniedIA={(message) => OPTIONAL_IA_DENIED_HANDLER}
+            timeoutIA={(message) => OPTIONAL_IA_TIMEOUT_HANDLER} />
+
+> Note: In IA_SUCCESS_HANDLER you should handle user authentication and make actions, applicable to your website
+
+> Note: If you don't want to handle success, denied, or timeout, replace *_HANDLER with {}
+
+> End of Step 2
+```
+
+Once you are ready, simply add the `code snippet` where you want IA button to appear.
+
+<aside class="notice">
+Please note: IA button will only work under the domain name you registered with us. If your dev environment is under a different domain, please contact us via our <a href="http://bit.ly/2yhKXXs" target="_blank">dev slack channel</a>
+</aside>
 
 <aside class="notice">
 You must replace <code>IA_PARTNER_CLIENT_ID_KEY</code> with your IA partner client id key.
@@ -147,6 +347,15 @@ IA System will call one of this three methods when finish IA Authentication acco
       // Example: window.location = 'IACompleteRegisteration.php?iaUser='+usernameOrEmail
     }
 ```
+
+```javascript--react
+> See Step 2 code snippet of IA Partner Integration
+
+    successIA={(usernameOrEmail) => IA_SUCCESS_HANDLER}
+
+> replace IA_SUCCESS_HANDLER with your handler or use {}
+```
+
 This method will be called when user finished IA Authentication successfully and approved the request on their IA app.
 
 Simply implement this method and continue your user flow, IA will provide all approved user info to your callback endpoint with the username and user email before calling this method. You can implement the callback to save these data for later use. Please refer to 'Callback Implementation Section'.
@@ -166,6 +375,15 @@ usernameOrEmail | This is the username or email that the user used it to authent
         alert(message);
       }
 ```
+
+```javascript--react
+> See Step 2 code snippet of IA Partner Integration
+
+     deniedIA={(message) => OPTIONAL_IA_DENIED_HANDLER}
+
+> replace OPTIONAL_IA_DENIED_HANDLER with your handler or use {}
+```
+
 This method will be called if your website user denied the IA Authentication request on the IA App or the request fail for any other reason.
 
 By default, this method alerts the user with a failing message, however you can change this to suit your need.
@@ -183,6 +401,15 @@ message | It contains the reason of failure if the user denied the process, ...e
         alert(message);
       }
 ```
+
+```javascript--react
+> See Step 2 code snippet of IA Partner Integration
+
+      timeoutIA={(message) => OPTIONAL_IA_TIMEOUT_HANDLER} />
+
+> replace OPTIONAL_IA_TIMEOUT_HANDLER with your handler or use {}
+```
+
 This method will be called if user failed to respond to IA request over IA App.
 
 By default, this method alerts the user with a timeout message.
