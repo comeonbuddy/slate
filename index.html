@@ -225,6 +225,14 @@
           </li>
           <li>
             <a href="#ia-partner-integration" class="toc-h1 toc-link" data-title="IA Partner Integration">IA Partner Integration</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#for-signing-up-signing-in" class="toc-h2 toc-link" data-title="For signing up / signing in.">For signing up / signing in.</a>
+                  </li>
+                  <li>
+                    <a href="#for-collecting-payment-from-your-clients" class="toc-h2 toc-link" data-title="For collecting payment from your clients.">For collecting payment from your clients.</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#handling-ia-authentication" class="toc-h1 toc-link" data-title="Handling IA Authentication">Handling IA Authentication</a>
@@ -244,7 +252,10 @@
             <a href="#callback-implementation" class="toc-h1 toc-link" data-title="Callback Implementation">Callback Implementation</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#callback" class="toc-h2 toc-link" data-title="Callback">Callback</a>
+                    <a href="#callback-when-user-approve-request-over-ia-app" class="toc-h2 toc-link" data-title="Callback when user approve request over IA App">Callback when user approve request over IA App</a>
+                  </li>
+                  <li>
+                    <a href="#callback-when-user-update-any-information-partner-website-has-access-to-it" class="toc-h2 toc-link" data-title="Callback when user update any information partner website has access to it">Callback when user update any information partner website has access to it</a>
                   </li>
                   <li>
                     <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="fetching token for this user from IA System">fetching token for this user from IA System</a>
@@ -270,8 +281,26 @@
 - Client Secret Key<br/><br/>
 Contact us at <a href="email:yo@instantaccess.io">yo@instantaccess.io</a> if you do not have these. You will need to provide us with a callback url to receive user info from our server.</p>
 <h1 id='ia-partner-integration'>IA Partner Integration</h1>
+<p>Once you are ready, simply add one of the following <code>code snippets</code> where you want IA button to appear.</p>
+
+<aside class="notice">
+Please note: IA button will only work under the domain name you registered with us. If your dev environment is under a different domain, please contact us via our <a href="http://bit.ly/2yhKXXs" target="_blank">dev slack channel</a>
+</aside>
+
+<aside class="notice">
+You must replace <code>IA_PARTNER_CLIENT_ID_KEY</code> with your IA partner client id key.
+</aside>
+
+<aside class="notice">
+You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner client secret key.
+</aside>
+
+<p>You can integrate the IA button for different two scenarios:
+1- For signing up / signing in.
+2- For collecting payment from your clients.</p>
+<h2 id='for-signing-up-signing-in'>For signing up / signing in.</h2>
 <blockquote>
-<p>To integrate IA on your website, add this code snippet to your website:</p>
+<p>To integrate IA on your website for signin up or signing in, add this code snippet to your website:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code>  <span class="c">&lt;!--</span> <span class="nx">IA</span> <span class="nx">Authentication</span> <span class="o">--&gt;</span>
   <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
@@ -561,21 +590,309 @@ Contact us at <a href="email:yo@instantaccess.io">yo@instantaccess.io</a> if you
 <span class="o">&gt;</span> <span class="na">Note</span><span class="p">:</span> <span class="nx">If</span> <span class="nx">you</span> <span class="nx">don</span><span class="err">'</span><span class="nx">t</span> <span class="nx">want</span> <span class="nx">to</span> <span class="nx">handle</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">denied</span><span class="p">,</span> <span class="nx">or</span> <span class="nx">timeout</span><span class="p">,</span> <span class="nx">replace</span> <span class="o">*</span><span class="nx">_HANDLER</span> <span class="kd">with</span> <span class="p">{}</span>
 
 <span class="o">&gt;</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">Step</span> <span class="mi">2</span>
-</code></pre>
-<p>Once you are ready, simply add the <code>code snippet</code> where you want IA button to appear.</p>
-
+</code></pre><h2 id='for-collecting-payment-from-your-clients'>For collecting payment from your clients.</h2>
 <aside class="notice">
-Please note: IA button will only work under the domain name you registered with us. If your dev environment is under a different domain, please contact us via our <a href="http://bit.ly/2yhKXXs" target="_blank">dev slack channel</a>
+You must replace <code>YOUR_PAYMENT_AMOUNT_WITH_THE_REGISTERED_CURRENCY_FOR_YOU_ON_IA_PLATFORM</code> with your payment that you want to collect from your user.
 </aside>
 
 <aside class="notice">
-You must replace <code>IA_PARTNER_CLIENT_ID_KEY</code> with your IA partner client id key.
+The Payment currency is the currency that you requested when you registered with the IA Platform.
 </aside>
 
-<aside class="notice">
-You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner client secret key.
-</aside>
-<h1 id='handling-ia-authentication'>Handling IA Authentication</h1>
+<blockquote>
+<p>To integrate IA on your website collecting payment from your clients, add this code snippet to your website:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="c">&lt;!--</span> <span class="nx">IA</span> <span class="nx">Authentication</span> <span class="o">--&gt;</span>
+  <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">client_id</span> <span class="o">=</span> <span class="s1">'IA_PARTNER_CLIENT_ID_KEY'</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">client_secret</span> <span class="o">=</span> <span class="s1">'IA_PARTNER_CLIENT_SECRET_KEY'</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">payment</span> <span class="o">=</span> <span class="s1">'YOUR_PAYMENT_AMOUNT_WITH_THE_REGISTERED_CURRENCY_FOR_YOU_ON_IA_PLATFORM'</span><span class="p">;</span>
+
+      <span class="kd">function</span> <span class="nx">successIA</span><span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Handle successLogin in IA</span>
+        <span class="c1">// Example: window.location = 'IACompleteRegisteration.php?iaUser='+usernameOrEmail</span>
+      <span class="p">}</span>
+
+      <span class="kd">function</span> <span class="nx">deniedIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="kd">function</span> <span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+      <span class="p">}</span>
+
+
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'ia-framework-login'</span><span class="p">).</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://dashboard.instantaccess.io/api/partner/authorize/view?client_id='</span><span class="o">+</span><span class="nx">client_id</span><span class="o">+</span><span class="s1">'&amp;client_secret='</span><span class="o">+</span><span class="nx">client_secret</span><span class="o">+</span><span class="s1">'&amp;payment='</span><span class="o">+</span><span class="nx">payment</span><span class="p">;</span>
+      <span class="c1">//listen to ia back</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">origin</span> <span class="o">!==</span> <span class="s1">'https://dashboard.instantaccess.io'</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'alert'</span><span class="p">)</span>
+          <span class="nx">alert</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'closeframe'</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-btn"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s2">"block"</span><span class="p">;</span>
+          <span class="nx">fade</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-framework-login"</span><span class="p">));</span>
+          <span class="c1">//document.getElementById("ia-framework-login").style.display = "none";</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'auth'</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">switch</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="s1">'success'</span><span class="p">:</span>
+              <span class="nx">successIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">usernameOrEmail</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s1">'denied'</span><span class="p">:</span>
+              <span class="nx">deniedIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s1">'timeout'</span><span class="p">:</span>
+              <span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span><span class="kc">false</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">iaButtonClicked</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">unfade</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-framework-login"</span><span class="p">));</span>
+      <span class="c1">//document.getElementById("ia-framework-login").style.display = "block";</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"ia-btn"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s2">"hidden"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">fade</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+      <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">){</span>
+          <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">'none'</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">op</span><span class="p">;</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">;</span>
+        <span class="nx">op</span> <span class="o">-=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+      <span class="p">},</span> <span class="mi">10</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">unfade</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+      <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">'block'</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">){</span>
+          <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">opacity</span> <span class="o">=</span> <span class="nx">op</span><span class="p">;</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">;</span>
+        <span class="nx">op</span> <span class="o">+=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+      <span class="p">},</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display: inline-block; position: relative;"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"button"</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">"iaButtonClicked()"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-btn"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"background-color: #4A4A4A; border-width: 0; padding: 0; width: 56px; height: 56px; border-radius:10px;"</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"https://dashboard.instantaccess.io/upload/image/whitelogo.svg"</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"ia-framework-login"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">""</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"170"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"215"</span> <span class="nx">frameBorder</span><span class="o">=</span><span class="s2">"0"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"display:none; border-radius:10px; z-index: 1000; position: absolute; left: 0px; bottom: 0px;"</span><span class="o">&gt;&lt;</span><span class="sr">/iframe</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+    <span class="err">#</span><span class="nx">ia</span><span class="o">-</span><span class="nx">btn</span><span class="p">:</span><span class="nx">focus</span> <span class="p">{</span>
+      <span class="nx">outline</span><span class="o">-</span><span class="nx">width</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="err">#</span><span class="nx">ia</span><span class="o">-</span><span class="nx">btn</span><span class="p">:</span><span class="nx">hover</span> <span class="p">{</span>
+      <span class="nl">opacity</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">;</span>
+      <span class="nl">cursor</span><span class="p">:</span> <span class="nx">pointer</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span>  <span class="c">&lt;!--</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">login</span> <span class="kd">with</span> <span class="nx">IA</span> <span class="o">--&gt;</span>
+</code></pre><pre class="highlight javascript tab-javascript--react"><code><span class="o">&gt;</span> <span class="nx">Step</span> <span class="mi">1</span><span class="p">:</span> <span class="nx">IAButton</span> <span class="nx">React</span> <span class="nx">component</span> <span class="nx">source</span> <span class="nx">code</span> <span class="o">-</span> <span class="nx">save</span> <span class="k">this</span> <span class="nx">file</span> <span class="nx">as</span> <span class="nx">IAButton</span><span class="p">.</span><span class="nx">js</span> <span class="k">in</span> <span class="nx">your</span> <span class="nx">project</span>
+
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s2">"react"</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">PropTypes</span> <span class="nx">from</span> <span class="s1">'prop-types'</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">IAButton</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+
+    <span class="nx">constructor</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">iaWhiteLogoSource</span><span class="p">:</span> <span class="nx">props</span><span class="p">.</span><span class="nx">iaServer</span><span class="o">+</span><span class="s1">'/upload/image/whitelogo.svg'</span><span class="p">,</span>
+            <span class="na">iaFrameSource</span><span class="p">:</span> <span class="nx">props</span><span class="p">.</span><span class="nx">iaServer</span><span class="o">+</span><span class="s1">'/api/partner/authorize/view?client_id='</span><span class="o">+</span><span class="nx">props</span><span class="p">.</span><span class="nx">clientId</span><span class="o">+</span><span class="s1">'&amp;client_secret='</span><span class="o">+</span><span class="nx">props</span><span class="p">.</span><span class="nx">clientSecret</span><span class="o">+</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">payment</span><span class="p">?(</span><span class="s1">'&amp;payment='</span><span class="o">+</span><span class="nx">props</span><span class="p">.</span><span class="nx">payment</span><span class="p">):</span><span class="s1">''</span><span class="p">),</span>
+            <span class="na">iaButtonHovered</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="na">iaButtonFocused</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="na">iaButtonHidden</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="na">iaFrameDisplayed</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="na">iaFrameOpacity</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="na">iaFrameFilter</span><span class="p">:</span> <span class="s1">'alpha(opacity=0)'</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">componentDidMount</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">handleIAMessage</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">componentWillUnmount</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">handleIAMessage</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">handleIAMessage</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">eventOrigin</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">origin</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">iaServer</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">"http"</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">eventOrigin</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">"http:"</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">eventOrigin</span> <span class="o">=</span> <span class="nx">eventOrigin</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">eventOrigin</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">"https:"</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">eventOrigin</span> <span class="o">=</span> <span class="nx">eventOrigin</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">eventOrigin</span> <span class="o">!==</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">iaServer</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'alert'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'closeframe'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+                <span class="na">iaBtnHidden</span><span class="p">:</span> <span class="kc">false</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">fadeIAFrame</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">action</span> <span class="o">===</span> <span class="s1">'auth'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="s1">'success'</span><span class="p">:</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">successIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">usernameOrEmail</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="s1">'denied'</span><span class="p">:</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">deniedIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="s1">'timeout'</span><span class="p">:</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">successIA</span> <span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Handle successLogin in IA</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">successIA</span><span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">deniedIA</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">notifyUser</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">deniedIA</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">timeoutIA</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">notifyUser</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">timeoutIA</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">iaButtonClicked</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">unfadeIAFrame</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+            <span class="na">iaBtnHidden</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nx">fadeIAFrame</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+        <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">){</span>
+                <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaFrameDisplayed</span><span class="p">:</span> <span class="kc">false</span><span class="p">});</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+                <span class="na">iaFrameOpacity</span><span class="p">:</span> <span class="nx">op</span><span class="p">,</span>
+                <span class="na">iaFrameFilter</span><span class="p">:</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s1">')'</span>
+            <span class="p">});</span>
+            <span class="nx">op</span> <span class="o">-=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+        <span class="p">},</span> <span class="mi">10</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">unfadeIAFrame</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">op</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>  <span class="c1">// initial opacity</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaFrameDisplayed</span><span class="p">:</span> <span class="kc">true</span><span class="p">});</span>
+        <span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">){</span>
+                <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+                <span class="na">iaFrameOpacity</span><span class="p">:</span> <span class="nx">op</span><span class="p">,</span>
+                <span class="na">iaFrameFilter</span><span class="p">:</span> <span class="s1">'alpha(opacity='</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="s1">')'</span>
+            <span class="p">});</span>
+            <span class="nx">op</span> <span class="o">+=</span> <span class="nx">op</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>
+        <span class="p">},</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">mainDiv</span><span class="p">}</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"button"</span>
+                        <span class="nx">onClick</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">iaButtonClicked</span><span class="p">()}</span>
+                        <span class="nx">onMouseEnter</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaButtonHovered</span><span class="p">:</span> <span class="kc">true</span><span class="p">})}</span>
+                        <span class="nx">onMouseLeave</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaButtonHovered</span><span class="p">:</span> <span class="kc">false</span><span class="p">})}</span>
+                        <span class="nx">onFocus</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaButtonFocused</span><span class="p">:</span> <span class="kc">true</span><span class="p">})}</span>
+                        <span class="nx">onBlur</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">iaButtonFocused</span><span class="p">:</span> <span class="kc">false</span><span class="p">})}</span>
+                        <span class="nx">style</span><span class="o">=</span><span class="p">{{...</span><span class="nx">styles</span><span class="p">.</span><span class="nx">iaBtn</span><span class="p">,</span> <span class="p">...{</span><span class="na">opacity</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaButtonHovered</span> <span class="p">?</span> <span class="mf">0.9</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">outlineWidth</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaButtonFocused</span> <span class="p">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="s1">'inherit'</span><span class="p">,</span> <span class="na">display</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaBtnHidden</span> <span class="p">?</span> <span class="s1">'hidden'</span> <span class="p">:</span> <span class="s1">'block'</span><span class="p">}}}</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaWhiteLogoSource</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>                <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>                <span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaFrameSource</span><span class="p">}</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"170"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"215"</span> <span class="nx">frameBorder</span><span class="o">=</span><span class="s2">"0"</span> <span class="nx">style</span><span class="o">=</span><span class="p">{{...</span><span class="nx">styles</span><span class="p">.</span><span class="nx">iaFrame</span><span class="p">,</span> <span class="p">...{</span><span class="na">opacity</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaFrameOpacity</span><span class="p">,</span> <span class="na">filter</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaFrameFilter</span><span class="p">,</span> <span class="na">display</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">iaFrameDisplayed</span> <span class="p">?</span> <span class="s1">'block'</span> <span class="p">:</span> <span class="s1">'none'</span><span class="p">}}}</span><span class="sr">/</span><span class="err">&gt;
+</span>            <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">IAButton</span><span class="p">.</span><span class="nx">propTypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">iaServer</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">string</span><span class="p">,</span>
+    <span class="na">clientId</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">string</span><span class="p">.</span><span class="nx">isRequired</span><span class="p">,</span>
+    <span class="na">clientSecret</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">string</span><span class="p">.</span><span class="nx">isRequired</span><span class="p">,</span>
+    <span class="na">payment</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">string</span><span class="p">,</span>
+    <span class="na">notifyUser</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">bool</span><span class="p">,</span>
+    <span class="na">successIA</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">func</span><span class="p">.</span><span class="nx">isRequired</span><span class="p">,</span>
+    <span class="na">deniedIA</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">func</span><span class="p">.</span><span class="nx">isRequired</span><span class="p">,</span>
+    <span class="na">timeoutIA</span><span class="p">:</span> <span class="nx">PropTypes</span><span class="p">.</span><span class="nx">func</span><span class="p">.</span><span class="nx">isRequired</span>
+<span class="p">};</span>
+
+<span class="nx">IAButton</span><span class="p">.</span><span class="nx">defaultProps</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">notifyUser</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">iaServer</span><span class="p">:</span> <span class="s1">'//dashboard.instantaccess.io'</span>
+<span class="p">};</span>
+
+<span class="kr">const</span> <span class="nx">styles</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">mainDiv</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">display</span><span class="p">:</span> <span class="s1">'inline-block'</span><span class="p">,</span>
+        <span class="na">position</span><span class="p">:</span> <span class="s1">'relative'</span>
+    <span class="p">},</span>
+    <span class="na">iaBtn</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">backgroundColor</span><span class="p">:</span> <span class="s1">'#4A4A4A'</span><span class="p">,</span>
+        <span class="na">borderWidth</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">padding</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">width</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="na">height</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="na">borderRadius</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="na">cursor</span><span class="p">:</span> <span class="s1">'pointer'</span>
+    <span class="p">},</span>
+    <span class="na">iaFrame</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">display</span><span class="p">:</span><span class="s1">'none'</span><span class="p">,</span>
+        <span class="na">borderRadius</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="na">zIndex</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="na">position</span><span class="p">:</span> <span class="s1">'absolute'</span><span class="p">,</span>
+        <span class="na">left</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">bottom</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="o">&gt;</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">Step</span> <span class="mi">1</span>
+
+
+<span class="o">&gt;</span> <span class="nx">Step</span> <span class="mi">2</span><span class="p">:</span> <span class="nx">Add</span> <span class="nx">IAButton</span> <span class="nx">component</span> <span class="nx">where</span> <span class="nx">you</span> <span class="nx">need</span>
+
+  <span class="o">&lt;</span><span class="nx">IAButton</span> <span class="nx">clientId</span><span class="o">=</span><span class="s2">"IA_PARTNER_CLIENT_ID_KEY"</span>
+            <span class="nx">clientSecret</span><span class="o">=</span><span class="s2">"IA_PARTNER_CLIENT_SECRET_KEY"</span>
+            <span class="nx">payment</span><span class="o">=</span><span class="s2">"YOUR_PAYMENT_AMOUNT_WITH_THE_REGISTERED_CURRENCY_FOR_YOU_ON_IA_PLATFORM"</span><span class="p">;</span>
+            <span class="nx">notifyUser</span><span class="o">=</span><span class="p">{</span><span class="kc">false</span><span class="p">}</span>
+            <span class="nx">successIA</span><span class="o">=</span><span class="p">{(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">IA_SUCCESS_HANDLER</span><span class="p">}</span>
+            <span class="nx">deniedIA</span><span class="o">=</span><span class="p">{(</span><span class="nx">message</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">OPTIONAL_IA_DENIED_HANDLER</span><span class="p">}</span>
+            <span class="nx">timeoutIA</span><span class="o">=</span><span class="p">{(</span><span class="nx">message</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">OPTIONAL_IA_TIMEOUT_HANDLER</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>
+<span class="o">&gt;</span> <span class="na">Note</span><span class="p">:</span> <span class="nx">In</span> <span class="nx">IA_SUCCESS_HANDLER</span> <span class="nx">you</span> <span class="nx">should</span> <span class="nx">handle</span> <span class="nx">user</span> <span class="nx">authentication</span> <span class="nx">and</span> <span class="nx">make</span> <span class="nx">actions</span><span class="p">,</span> <span class="nx">applicable</span> <span class="nx">to</span> <span class="nx">your</span> <span class="nx">website</span>
+
+<span class="o">&gt;</span> <span class="na">Note</span><span class="p">:</span> <span class="nx">If</span> <span class="nx">you</span> <span class="nx">don</span><span class="err">'</span><span class="nx">t</span> <span class="nx">want</span> <span class="nx">to</span> <span class="nx">handle</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">denied</span><span class="p">,</span> <span class="nx">or</span> <span class="nx">timeout</span><span class="p">,</span> <span class="nx">replace</span> <span class="o">*</span><span class="nx">_HANDLER</span> <span class="kd">with</span> <span class="p">{}</span>
+
+<span class="o">&gt;</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">Step</span> <span class="mi">2</span>
+</code></pre><h1 id='handling-ia-authentication'>Handling IA Authentication</h1>
 <p>IA System will call one of this three methods when finish IA Authentication according to the status (success, denied or fail, timeout)</p>
 <h2 id='success'>Success</h2><pre class="highlight javascript tab-javascript"><code>    <span class="kd">function</span> <span class="nx">successIA</span><span class="p">(</span><span class="nx">usernameOrEmail</span><span class="p">)</span> <span class="p">{</span>
       <span class="c1">// Handle successLogin in IA</span>
@@ -652,15 +969,19 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 <td>It contains timeout message.</td>
 </tr>
 </tbody></table>
-<h1 id='callback-implementation'>Callback Implementation</h1><h2 id='callback'>Callback</h2><pre class="highlight php tab-php"><code>$authorizationCode = $_GET['code'];
+<h1 id='callback-implementation'>Callback Implementation</h1>
+<p>The callback is requested from IA platform in two conditions:</p>
+
+<p>1- When user approved the request over IA App, the Callback URL will be called with two parameters.
+2- when the user update any information partner website has access to it. </p>
+<h2 id='callback-when-user-approve-request-over-ia-app'>Callback when user approve request over IA App</h2><pre class="highlight php tab-php"><code>$authorizationCode = $_GET['code'];
 $state = $_GET['state'];
 $stateArr = explode("@@", $state);
-$username = $stateArr[0];
-$email = $stateArr[1];
-</code></pre>
-<p>When user approved the request over IA App, the Callback URL will be called with two parameters.</p>
-<h3 id='http-request'>HTTP Request</h3>
-<p><code>GET http://yourwebsite.com/yourCallBackurl?code={AUTHORIZATION_CODE}&amp;state={username}@@{email}</code></p>
+$userid = $stateArr[0];
+$username = $stateArr[1];
+$email = $stateArr[2];
+</code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><code>GET http://yourwebsite.com/yourCallBackurl?code={AUTHORIZATION_CODE}&amp;state={userid}@@{username}@@{email}</code></p>
 
 <table><thead>
 <tr>
@@ -674,7 +995,22 @@ $email = $stateArr[1];
 </tr>
 <tr>
 <td>state</td>
-<td>this string contains the username and email concatenated with &#39;@@&#39;, you can split them and use them.</td>
+<td>this string contains the userid, username and email concatenated with &#39;@@&#39;, you can split them and use them.</td>
+</tr>
+</tbody></table>
+<h2 id='callback-when-user-update-any-information-partner-website-has-access-to-it'>Callback when user update any information partner website has access to it</h2><pre class="highlight php tab-php"><code>$userId = $_POST['user_id'];
+</code></pre><h3 id='http-request-2'>HTTP Request</h3>
+<p><code>POST http://yourwebsite.com/yourCallBackurl</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_id</td>
+<td>the user id for the user who updated any associated info.</td>
 </tr>
 </tbody></table>
 <h2 id='fetching-token-for-this-user-from-ia-system'>fetching token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
@@ -718,8 +1054,8 @@ if($result !== FALSE) {
 <aside class="success">
 This token is required everytime your system requests user info from IA. 
 </aside>
-<h3 id='http-request-2'>HTTP Request</h3>
-<p><code>POST http://instantaccess.io/api/oauth/token?code={AUTHORIZATION_CODE}&amp;state={username}@@{email}</code></p>
+<h3 id='http-request-3'>HTTP Request</h3>
+<p><code>POST http://instantaccess.io/api/oauth/token</code></p>
 
 <table><thead>
 <tr>
@@ -795,7 +1131,7 @@ if($result !== FALSE) {
 <aside class="success">
 You can fetch user info with the user token via this api call at anytime.
 </aside>
-<h3 id='http-request-3'>HTTP Request</h3>
+<h3 id='http-request-4'>HTTP Request</h3>
 <p><code>GET http://instantaccess.io/api/public/user</code></p>
 
 <p>NO Parameters here just set the Headers as following</p>
