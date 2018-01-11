@@ -267,7 +267,7 @@
           </li>
       </div>
         <ul class="toc-footer">
-            <li><a href='http://instantaccess.io/partner'>Partner Sign Up</a></li>
+            <li><a href='http://www.instantaccess.io/partner'>Partner Sign Up</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
@@ -1014,14 +1014,14 @@ $email = $stateArr[2];
 </tr>
 </tbody></table>
 <h2 id='fetching-token-for-this-user-from-ia-system'>fetching token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
-$curl = curl_init('http://instantaccess.io/api/oauth/token');
+$curl = curl_init('https://instantaccess.io/api/oauth/token');
 
 // SET API request type as post
 curl_setopt($curl, CURLOPT_POST, 1);
 
 // Returns the data/output as a string instead of raw data
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array('client_id'=&gt;'IA_PARTNER_CLIENT_ID_KEY',
                                                               'client_secret'=&gt;'IA_PARTNER_CLIENT_SECRET_KEY',
                                                               'code'=&gt;'your Authorization Code that provided in the previous step',
@@ -1055,7 +1055,7 @@ if($result !== FALSE) {
 This token is required everytime your system requests user info from IA. 
 </aside>
 <h3 id='http-request-3'>HTTP Request</h3>
-<p><code>POST http://instantaccess.io/api/oauth/token</code></p>
+<p><code>POST https://instantaccess.io/api/oauth/token</code></p>
 
 <table><thead>
 <tr>
@@ -1090,11 +1090,11 @@ This token is required everytime your system requests user info from IA.
 }
 
 //setup the request, you can also use CURLOPT_URL
-$curl = curl_init('http://instantaccess.io/api/public/user');
+$curl = curl_init('https://instantaccess.io/api/public/user');
 
 // Returns the data/output as a string instead of raw data
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 //Set your auth headers
 curl_setopt($curl, CURLOPT_HTTPHEADER, array(
     'Content-Type: application/json',
@@ -1132,7 +1132,7 @@ if($result !== FALSE) {
 You can fetch user info with the user token via this api call at anytime.
 </aside>
 <h3 id='http-request-4'>HTTP Request</h3>
-<p><code>GET http://instantaccess.io/api/public/user</code></p>
+<p><code>GET https://instantaccess.io/api/public/user</code></p>
 
 <p>NO Parameters here just set the Headers as following</p>
 
