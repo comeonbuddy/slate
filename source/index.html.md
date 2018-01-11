@@ -7,7 +7,7 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - php: PHP
 
 toc_footers:
-  - <a href='http://instantaccess.io/partner'>Partner Sign Up</a>
+  - <a href='http://www.instantaccess.io/partner'>Partner Sign Up</a>
 
 search: true
 ---
@@ -784,14 +784,14 @@ user_id | the user id for the user who updated any associated info.
 
 ```php
 //setup the request, you can also use CURLOPT_URL
-$curl = curl_init('http://instantaccess.io/api/oauth/token');
+$curl = curl_init('https://instantaccess.io/api/oauth/token');
 
 // SET API request type as post
 curl_setopt($curl, CURLOPT_POST, 1);
 
 // Returns the data/output as a string instead of raw data
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array('client_id'=>'IA_PARTNER_CLIENT_ID_KEY',
                                                               'client_secret'=>'IA_PARTNER_CLIENT_SECRET_KEY',
                                                               'code'=>'your Authorization Code that provided in the previous step',
@@ -829,7 +829,7 @@ This token is required everytime your system requests user info from IA.
 
 ### HTTP Request
 
-`POST http://instantaccess.io/api/oauth/token`
+`POST https://instantaccess.io/api/oauth/token`
 
 Parameter | Description
 --------- | -----------
@@ -849,11 +849,11 @@ if($result !== FALSE) {
 }
 
 //setup the request, you can also use CURLOPT_URL
-$curl = curl_init('http://instantaccess.io/api/public/user');
+$curl = curl_init('https://instantaccess.io/api/public/user');
 
 // Returns the data/output as a string instead of raw data
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 //Set your auth headers
 curl_setopt($curl, CURLOPT_HTTPHEADER, array(
     'Content-Type: application/json',
@@ -895,7 +895,7 @@ You can fetch user info with the user token via this api call at anytime.
 
 ### HTTP Request
 
-`GET http://instantaccess.io/api/public/user`
+`GET https://instantaccess.io/api/public/user`
 
 NO Parameters here just set the Headers as following
 
