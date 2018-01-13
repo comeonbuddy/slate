@@ -261,7 +261,10 @@
                     <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="fetching token for this user from IA System">fetching token for this user from IA System</a>
                   </li>
                   <li>
-                    <a href="#fetch-user-token" class="toc-h2 toc-link" data-title="Fetch User Token">Fetch User Token</a>
+                    <a href="#refreshing-access-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="Refreshing Access Token for this user from IA System">Refreshing Access Token for this user from IA System</a>
+                  </li>
+                  <li>
+                    <a href="#fetch-user-information" class="toc-h2 toc-link" data-title="Fetch User Information">Fetch User Information</a>
                   </li>
               </ul>
           </li>
@@ -1034,19 +1037,18 @@ curl_close($curl);
 
 if($result !== FALSE) {
   $data = json_decode($result,true);
-  $user_token = $data["access_token"];
+  $user_access_token = $data["access_token"];
+  $user__refresh_token = $data["refresh_token"];
+  $user_access_token_expiry = $data["expires_in"];
 }
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"message"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"User data items retrieved successfully"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"data"</span><span class="p">:[</span><span class="w">
-      </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+01111111111111"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"Email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test@test.com"</span><span class="p">,</span><span class="w">
-  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_USER_ACCESS_TOKEN"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_USER_REFRESH_TOKEN"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_NUMBER_SECONDS_OF_UNTIL_THE_ACCESS_TOKEN_EXPIRES"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <p>Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)</p>
@@ -1055,6 +1057,76 @@ if($result !== FALSE) {
 This token is required everytime your system requests user info from IA. 
 </aside>
 <h3 id='http-request-3'>HTTP Request</h3>
+<p><code>POST https://dashboard.instantaccess.io/api/oauth/token</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>client_id</td>
+<td>your IA_PARTNER_CLIENT_ID_KEY</td>
+</tr>
+<tr>
+<td>client_secret</td>
+<td>your IA_PARTNER_CLIENT_SECRET_KEY</td>
+</tr>
+<tr>
+<td>refresh_token</td>
+<td>your Authorization Code that provided in the previous step</td>
+</tr>
+<tr>
+<td>grant_type</td>
+<td>always with string value &#39;refresh_token&#39;</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>send it with empty string =&gt; &#39;&#39;</td>
+</tr>
+</tbody></table>
+<h2 id='refreshing-access-token-for-this-user-from-ia-system'>Refreshing Access Token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
+$curl = curl_init('https://dashboard.instantaccess.io/api/oauth/token');
+
+// SET API request type as post
+curl_setopt($curl, CURLOPT_POST, 1);
+
+// Returns the data/output as a string instead of raw data
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array('client_id'=&gt;'IA_PARTNER_CLIENT_ID_KEY',
+                                                              'client_secret'=&gt;'IA_PARTNER_CLIENT_SECRET_KEY',
+                                                              'refresh_token'=&gt;'USER_REFRESH_TOKEN',
+                                                              'grant_type'=&gt;'refresh_token',
+                                                              'scope' =&gt; '')));
+
+$result = curl_exec($curl);
+
+curl_close($curl);
+
+if($result !== FALSE) {
+  $data = json_decode($result,true);
+  $user_access_token = $data["access_token"];
+  $user__refresh_token = $data["refresh_token"];
+  $user_access_token_expiry = $data["expires_in"];
+}
+</code></pre>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_USER_ACCESS_TOKEN"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_USER_REFRESH_TOKEN"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_NUMBER_OF_SECONDS_UNTIL_THE_ACCESS_TOKEN_EXPIRES"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)</p>
+
+<aside class="success">
+This token is required everytime your system requests user info from IA. 
+</aside>
+<h3 id='http-request-4'>HTTP Request</h3>
 <p><code>POST https://dashboard.instantaccess.io/api/oauth/token</code></p>
 
 <table><thead>
@@ -1084,7 +1156,7 @@ This token is required everytime your system requests user info from IA.
 <td>always with string value &#39;authorization_code&#39;</td>
 </tr>
 </tbody></table>
-<h2 id='fetch-user-token'>Fetch User Token</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
+<h2 id='fetch-user-information'>Fetch User Information</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
   $data = json_decode($result,true);
   $user_token = $data["access_token"];
 }
@@ -1131,7 +1203,7 @@ if($result !== FALSE) {
 <aside class="success">
 You can fetch user info with the user token via this api call at anytime.
 </aside>
-<h3 id='http-request-4'>HTTP Request</h3>
+<h3 id='http-request-5'>HTTP Request</h3>
 <p><code>GET https://dashboard.instantaccess.io/api/public/user</code></p>
 
 <p>NO Parameters here just set the Headers as following</p>
