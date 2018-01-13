@@ -820,7 +820,7 @@ if($result !== FALSE) {
 }
 ```
 
-Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)
+Please use the authorization code provided previously to fetch user access token and refresh token then save it in your users record. (database, files, ...etc)
 
 <aside class="success">
 This token is required everytime your system requests user info from IA. 
@@ -834,9 +834,9 @@ Parameter | Description
 --------- | -----------
 client_id | your IA_PARTNER_CLIENT_ID_KEY
 client_secret | your IA_PARTNER_CLIENT_SECRET_KEY
-refresh_token | your Authorization Code that provided in the previous step
-grant_type | always with string value 'refresh_token'
-scope | send it with empty string => ''
+code | your Authorization Code that provided in the previous step
+redirect_uri | your callback url
+grant_type | always with string value 'authorization_code'
 
 ## Refreshing Access Token for this user from IA System
 
@@ -878,7 +878,7 @@ if($result !== FALSE) {
 }
 ```
 
-Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)
+Please use the refresh_token provided previously to fetch new user access token and refresh token then save it in your users record. (database, files, ...etc)
 
 <aside class="success">
 This token is required everytime your system requests user info from IA. 
@@ -892,9 +892,9 @@ Parameter | Description
 --------- | -----------
 client_id | your IA_PARTNER_CLIENT_ID_KEY
 client_secret | your IA_PARTNER_CLIENT_SECRET_KEY
-code | your Authorization Code that provided in the previous step
-redirect_uri | your callback url
-grant_type | always with string value 'authorization_code'
+refresh_token | your Authorization Code that provided in the previous step
+grant_type | always with string value 'refresh_token'
+scope | send it with empty string => ''
 
 
 ## Fetch User Information
