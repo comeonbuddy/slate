@@ -804,7 +804,9 @@ curl_close($curl);
 
 if($result !== FALSE) {
   $data = json_decode($result,true);
-  $user_token = $data["access_token"];
+  $user_access_token = $data["access_token"];
+  $user__refresh_token = $data["refresh_token"];
+  $user_access_token_expiry = $data["expires_in"];
 }
 ```
 
@@ -812,12 +814,67 @@ if($result !== FALSE) {
 
 ```json
 {
-  "success": true,
-  "message" : "User data items retrieved successfully",
-  "data":[
-      "phone": "+01111111111111",
-      "Email": "test@test.com",
-  ],
+  "access_token": "THE_USER_ACCESS_TOKEN",
+  "refresh_token": "THE_USER_REFRESH_TOKEN",
+  "expires_in": "THE_NUMBER_SECONDS_OF_UNTIL_THE_ACCESS_TOKEN_EXPIRES"
+}
+```
+
+Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)
+
+<aside class="success">
+This token is required everytime your system requests user info from IA. 
+</aside>
+
+### HTTP Request
+
+`POST https://dashboard.instantaccess.io/api/oauth/token`
+
+Parameter | Description
+--------- | -----------
+client_id | your IA_PARTNER_CLIENT_ID_KEY
+client_secret | your IA_PARTNER_CLIENT_SECRET_KEY
+refresh_token | your Authorization Code that provided in the previous step
+grant_type | always with string value 'refresh_token'
+scope | send it with empty string => ''
+
+## Refreshing Access Token for this user from IA System
+
+```php
+//setup the request, you can also use CURLOPT_URL
+$curl = curl_init('https://dashboard.instantaccess.io/api/oauth/token');
+
+// SET API request type as post
+curl_setopt($curl, CURLOPT_POST, 1);
+
+// Returns the data/output as a string instead of raw data
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array('client_id'=>'IA_PARTNER_CLIENT_ID_KEY',
+                                                              'client_secret'=>'IA_PARTNER_CLIENT_SECRET_KEY',
+                                                              'refresh_token'=>'USER_REFRESH_TOKEN',
+                                                              'grant_type'=>'refresh_token',
+                                                              'scope' => '')));
+
+$result = curl_exec($curl);
+
+curl_close($curl);
+
+if($result !== FALSE) {
+  $data = json_decode($result,true);
+  $user_access_token = $data["access_token"];
+  $user__refresh_token = $data["refresh_token"];
+  $user_access_token_expiry = $data["expires_in"];
+}
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "access_token": "THE_USER_ACCESS_TOKEN",
+  "refresh_token": "THE_USER_REFRESH_TOKEN",
+  "expires_in": "THE_NUMBER_OF_SECONDS_UNTIL_THE_ACCESS_TOKEN_EXPIRES"
 }
 ```
 
@@ -840,7 +897,7 @@ redirect_uri | your callback url
 grant_type | always with string value 'authorization_code'
 
 
-## Fetch User Token
+## Fetch User Information
 
 ```php
 if($result !== FALSE) {
