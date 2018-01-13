@@ -1051,7 +1051,7 @@ if($result !== FALSE) {
   </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_NUMBER_SECONDS_OF_UNTIL_THE_ACCESS_TOKEN_EXPIRES"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)</p>
+<p>Please use the authorization code provided previously to fetch user access token and refresh token then save it in your users record. (database, files, ...etc)</p>
 
 <aside class="success">
 This token is required everytime your system requests user info from IA. 
@@ -1074,16 +1074,16 @@ This token is required everytime your system requests user info from IA.
 <td>your IA_PARTNER_CLIENT_SECRET_KEY</td>
 </tr>
 <tr>
-<td>refresh_token</td>
+<td>code</td>
 <td>your Authorization Code that provided in the previous step</td>
 </tr>
 <tr>
-<td>grant_type</td>
-<td>always with string value &#39;refresh_token&#39;</td>
+<td>redirect_uri</td>
+<td>your callback url</td>
 </tr>
 <tr>
-<td>scope</td>
-<td>send it with empty string =&gt; &#39;&#39;</td>
+<td>grant_type</td>
+<td>always with string value &#39;authorization_code&#39;</td>
 </tr>
 </tbody></table>
 <h2 id='refreshing-access-token-for-this-user-from-ia-system'>Refreshing Access Token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
@@ -1121,7 +1121,7 @@ if($result !== FALSE) {
   </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="s2">"THE_NUMBER_OF_SECONDS_UNTIL_THE_ACCESS_TOKEN_EXPIRES"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>Please use the authorization code provided previously to fetch user token and save it in your users record. (database, files, ...etc)</p>
+<p>Please use the refresh_token provided previously to fetch new user access token and refresh token then save it in your users record. (database, files, ...etc)</p>
 
 <aside class="success">
 This token is required everytime your system requests user info from IA. 
@@ -1144,16 +1144,16 @@ This token is required everytime your system requests user info from IA.
 <td>your IA_PARTNER_CLIENT_SECRET_KEY</td>
 </tr>
 <tr>
-<td>code</td>
+<td>refresh_token</td>
 <td>your Authorization Code that provided in the previous step</td>
 </tr>
 <tr>
-<td>redirect_uri</td>
-<td>your callback url</td>
+<td>grant_type</td>
+<td>always with string value &#39;refresh_token&#39;</td>
 </tr>
 <tr>
-<td>grant_type</td>
-<td>always with string value &#39;authorization_code&#39;</td>
+<td>scope</td>
+<td>send it with empty string =&gt; &#39;&#39;</td>
 </tr>
 </tbody></table>
 <h2 id='fetch-user-information'>Fetch User Information</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
