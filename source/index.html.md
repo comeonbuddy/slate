@@ -4,6 +4,7 @@ title: Instant Access Partner - API Reference
 language_tabs: # must be one of https://git.io/vQNgJ
   - javascript: JavaScript
   - javascript--react: React
+  - objective_c: Objective-C
   - php: PHP
 
 toc_footers:
@@ -44,7 +45,9 @@ You can integrate the IA button for different two scenarios:
 
 ## For signing up / signing in.
 
-> To integrate IA on your website for signin up or signing in, add this code snippet to your website:
+* To integrate IA on your website for signin up or signing in, you will need to add the JavaScript or React code snippet to your website.
+
+* To integrate IA in your iOS App for signin up or signing in, you will need to add the Objective-C units to your project.
 
 ```javascript
   <!-- IA Authentication -->
@@ -338,6 +341,480 @@ const styles = {
 > Note: If you don't want to handle success, denied, or timeout, replace *_HANDLER with {}
 
 > End of Step 2
+```
+
+```objective_c
+
+* Step 1: add the following units to your project:
+
+//
+//  IALogin.h
+//  https://WhatTuDu.com
+//
+//  Created by Christophe Delhaze - http://pikorua.it (chris@pikorua.it) on 7/12/17.
+//  Copyright © 2017-2018 Christophe Delhaze. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+typedef void(^CompletionBlock)(BOOL success, NSError *error,NSDictionary *userData);
+
+//Parameters required by IA
+const static NSString *client_id = @"client_id"; // Insert your client_id here
+const static NSString *client_secret = @"client_secret"; // Insert your client_secret here
+const static NSString *partnerDomainURL = @"partnerDomainURL"; // Enter the domain you registered with IA
+const static NSString *iaAuthorizeURL = @"https://dashboard.instantaccess.io/api/partner/authorize"; // To request authorization
+const static NSString *iaAuthorizeStatusURL = @"https://dashboard.instantaccess.io/api/partner/status"; // To check the request status
+const static NSString *payment = @""; // Not implemented in this version - Sign up / Login only.
+const static int statusCallInterval = 3; // in seconds
+const static int statusCheckingMaximumTime = 600; // in seconds
+
+//Additional Parameters to fetch the user data from your server (IA can only do call back to your server so your app will need to fetch the data from there.)
+//For this example we used php script on the server to fetch the data from a mySQL database. 
+//You will need to secure your call to your server to prevent unauthorized access to your user data. 
+//In this demo code, we will use basic security and do direct calls through https using a key/password conbination.
+const static NSString *domainKey = @"your_server_secret_key";
+const static NSString *domainPassword = @"your_server_secret_password";
+const static NSString *userDataURLFormat = @"https://yourwebsite.com/get/userData/%@/%@/%@";
+const static NSString *userIDDataURLFormat = @"https://yourwebsite.com/get/userIDData/%@/%@/%@";
+const static NSString *userTokenDataURLFormat = @"https://yourwebsite.com/get/userTokenData/%@/%@/%@";
+
+@interface IALogin : NSObject
+
+@property (strong, nonatomic) NSString *userName; //Entered by the user on your app login screen
+@property (assign, nonatomic) int statusCounter; 
+@property (strong, nonatomic) NSTimer *connectionTimer; //Timer used to schedule a status check call then a user data call
+@property (copy, nonatomic) CompletionBlock completionBlock; //Block called on success or failure of the IA login
+
++(instancetype)IALoginWithUsername:(NSString*) userName; //Create an instance of the IALogin Class
+
+//Perform login. We pass the completion block, a caller (view) that will be displaying a HUD while the login is in process and will also allow to cancel the login process.
+-(void)login:(CompletionBlock)completionBlock caller:(id)caller displayHUD:(SEL)displayHUD;
+
+//Cancel login process
+-(void)cancel;
+
+@end
+
+
+//
+//  IALogin.m
+//  https://WhatTuDu.com
+//
+//  Created by Christophe Delhaze - http://pikorua.it (chris@pikorua.it) on 7/12/17.
+//  Copyright © 2017-2018 Christophe Delhaze. All rights reserved.
+//
+
+#import "IALogin.h"
+
+#import <UserNotifications/UserNotifications.h>
+
+@implementation IALogin
+
+/* Create and instance of IALogin Class and set the userName */
++(instancetype)IALoginWithUsername:(NSString*) userName{
+    IALogin *iaLogin = [IALogin new];
+    iaLogin.userName = userName;
+    return iaLogin;
+}
+
+/* Cancel the login process*/
+-(void)cancel{
+    [self.connectionTimer invalidate];
+    self.connectionTimer = nil;
+    if (self.completionBlock) {
+        NSError *error = [NSError errorWithDomain:@"com.IA.error" code:2 userInfo:@{@"message":@"User Cancelled IA Login."}];
+        self.completionBlock(NO, error, nil);
+    }
+}
+
+/* Start the login process*/
+/* In a perfect world, Your app would be able to open IA App once the login start and once the user is done with the login process, IA App would open back your app to complete the login */
+/* At the present stage, IA App doesn't have an URL Scheme and doesn't allow to call your app URL Scheme. */
+/* As a work around, IA server will send a push notification to proceed with the login. Your app will be using Local Notifications to bring back the user into your app once the login is complete*/
+-(void)login:(CompletionBlock)completionBlock caller:(id)caller displayHUD:(SEL)displayHUD{
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"IA Works better with Local Notifications" message:@"Please allow Local Notifications to Log In with IA." preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Nope :(" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                [self proceedWithLogin:completionBlock];
+            }]];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Sounds Great :D" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)
+                                      completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                                          [caller performSelectorOnMainThread:displayHUD withObject:nil waitUntilDone:YES];
+                                          [self proceedWithLogin:completionBlock];
+                                      }];
+            }]];
+            [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:alert animated:YES completion:^{
+                
+            }];
+        } else {
+            [caller performSelectorOnMainThread:displayHUD withObject:nil waitUntilDone:YES];
+            [self proceedWithLogin:completionBlock];
+        }
+    }];
+}
+
+/* Proceed with the actual login. We will call IA server to request authorization*/
+-(void)proceedWithLogin:(CompletionBlock)completionBlock{
+    self.completionBlock = completionBlock;
+    NSError *error;
+    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@&client_secret=%@&user_identifier=%@", iaAuthorizeURL, client_id, client_secret, self.userName];
+    NSString *JSONString = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString] encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        self.completionBlock(NO, error, nil);
+        return;
+    }
+    NSDictionary *loginAuthenticationResponse;
+    if (JSONString) {
+        NSData* jsonEventsData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+        if (jsonEventsData) {
+            error = nil;
+            loginAuthenticationResponse = [NSJSONSerialization
+                                           JSONObjectWithData:jsonEventsData
+                                           options:0
+                                           error:&error];
+            if (error) {
+              self.completionBlock(NO, error, nil);
+              return;
+            }
+        }
+    }
+    if ([loginAuthenticationResponse[@"success"]boolValue]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.connectionTimer = [NSTimer scheduledTimerWithTimeInterval:statusCallInterval repeats:NO block:^(NSTimer * _Nonnull timer) {
+                [self checkStatus];
+            }];
+        });
+    }
+}
+
+-(void)checkStatus {
+    NSError *error;
+    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@&client_secret=%@&user_identifier=%@", iaAuthorizeStatusURL, client_id, client_secret, self.userName];
+    NSString *JSONString = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString] encoding:NSUTF8StringEncoding error:&error];
+    NSDictionary *loginAuthenticationResponse;
+    if (JSONString) {
+        NSData* jsonEventsData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+        if (jsonEventsData) {
+            error = nil;
+            loginAuthenticationResponse = [NSJSONSerialization
+                                           JSONObjectWithData:jsonEventsData
+                                           options:0
+                                           error:&error];
+        }
+    }
+    if( ([loginAuthenticationResponse[@"success"] boolValue] == false) && [loginAuthenticationResponse[@"message"] isEqualToString: @"User has previously authorized this partner" ]) {
+        [self authSuccess];
+    } else {
+        [self updateStatus:loginAuthenticationResponse[@"data"]];
+    }
+}
+
+-(void)updateStatus:(NSString*)current {
+    NSDictionary *status = @{@"approve":@1,@"deny":@2};
+    switch ([status[current] intValue]) {
+        case 1:
+             [self authSuccess];
+            break;
+        case 2:
+            [self authDenied];
+            break;
+        default:
+            if (self.statusCounter * statusCallInterval > statusCheckingMaximumTime) {
+                [self authTimeout];
+                break;
+            }
+            self.statusCounter += 1;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.connectionTimer = [NSTimer scheduledTimerWithTimeInterval:statusCallInterval repeats:NO block:^(NSTimer * _Nonnull timer) {
+                    [self checkStatus];
+                }];
+            });
+            break;
+    }
+}
+
+-(void)authSuccess{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.connectionTimer = [NSTimer scheduledTimerWithTimeInterval:statusCallInterval repeats:NO block:^(NSTimer * _Nonnull timer) {
+            [self getUserData];
+        }];
+    });
+}
+
+-(void)authDenied{
+    NSError *error = [NSError errorWithDomain:@"com.IA.error" code:1 userInfo:@{@"message":@"Authentication Denied"}];
+    self.completionBlock(NO, error, nil);
+}
+
+-(void)authTimeout{
+    NSError *error = [NSError errorWithDomain:@"com.IA.error" code:0 userInfo:@{@"message":@"Authentication Timed Out"}];
+    self.completionBlock(NO, error, nil);
+}
+
+-(void)getUserData {
+    NSError *error;
+    NSString *urlString = [NSString stringWithFormat:userDataURLFormat, self.userName, domainKey, domainPassword];
+    NSString *JSONString = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString] encoding:NSUTF8StringEncoding error:&error];
+    NSDictionary *userDataResponse;
+    error = nil;
+    if (JSONString) {
+        NSData* jsonEventsData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+        if (jsonEventsData) {
+            userDataResponse = [NSJSONSerialization
+                                           JSONObjectWithData:jsonEventsData
+                                           options:0
+                                           error:&error];
+        }
+    }
+    
+    if ((error == nil)&&(JSONString)) {
+        self.completionBlock(YES, error, userDataResponse);
+    } else {
+        NSError *error = [NSError errorWithDomain:@"com.IA.error" code:2 userInfo:@{@"message":@"Invalid User Data Returned"}];
+        self.completionBlock(NO, error, nil);
+    }
+}
+
+@end
+
+
+* Step 2: Add The UI elements On you login page:
+
+You will need 2 UIButton's and 1 UITextField.
+
+1 Button (IALoginButton) will be used to make the other button and text field visible. 
+By default that button will use the IA Logo. Alternatively as I did in WhatTuDu, you can create a custom button that integrate nicely in your UI.
+See Resources on the left.
+
+The text field (IALabel) is used by the user to input his user name and the 2nd button (IAButton) is used to proceed with the login.
+
+```
+<span style="padding: 10px; width: 100%; background: grey; display: block;margin-left: -28px;padding-left: 28px;padding-right: 28px;">
+<strong>iOS Resources:</strong><br/><br/>
+* IA Button:<br/><img style="padding: 10px;" src="/images/IAButton.png"/><br/>
+* IA Logo for custom buttons:<br/><img style="padding: 10px;" src="/images/whitehand.png"/><br/>
+* Custom Button Example:<br/><img style="padding: 10px;" width="350" src="/images/WhatTuDu.png"/><br/>
+</span>
+
+```objective_c
+
+* Step 3: In the LoginViewController.h add / change the following
+
+@class IALogin;
+
+@interface LoginViewController : UIViewController <UITextFieldDelegate,UIViewControllerTransitioningDelegate>
+- (IBAction)loginWithIA:(id)sender;
+- (IBAction)displayIAForm:(id)sender;
+
+@property (strong, nonatomic) IBOutlet UIButton *IALoginButton;
+@property (strong, nonatomic) IBOutlet UIButton *IAButton;
+@property (strong, nonatomic) IBOutlet UITextField *IALabel;
+@property (strong, nonatomic) IALogin *iaLogin;
+
+
+* Step 4: In LoginViewController.m add the following
+
+#import "IALogin.h"
+#import <UserNotifications/UserNotifications.h>
+
+then in the @implementation part:
+
+- (void)viewDidLoad {
+    self.IALabel.delegate = self;
+    //keep whatever other code you had in there...
+}
+
+
+//Implement the cancelButtonTapped to your need. 
+//We hide the HUD and cancel the login then nil the iaLogin object.
+- (void)cancelButtonTapped:(UIButton*)sender{
+    [self.hudButton removeFromSuperview];
+    self.hudButton = nil;
+    [self.iaLogin cancel]; //Required
+    self.iaLogin = nil; // Required
+    [ProgressHUD dismiss];
+    [self hideIAForm:nil]; // Required
+}
+
+
+//Implement the displayHUD to your need. 
+//You have an example of implementation using a modified version of ProgressHUD here...
+-(void)displayHUD{
+    [ProgressHUD show:@"Please login using IA App or Tap here to cancel." Interaction:NO];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    ProgressHUD *hud = [ProgressHUD shared];
+    self.hudButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.hudButton addTarget:self action:@selector(cancelButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.hudButton.frame = hud.frame;
+    self.hudButton.layer.zPosition = CGFLOAT_MAX;
+    [hud.backgroundView addSubview:self.hudButton];
+    hud.backgroundView.layer.zPosition = 0;
+}
+
+- (IBAction)loginWithIA:(id)sender {
+    if (![self.IALabel.text isEqualToString:@""]) { //we need a userName
+        [self.IALabel resignFirstResponder];
+        
+        self.iaLogin = [IALogin IALoginWithUsername:self.IALabel.text];
+        [self.iaLogin login:^(BOOL success, NSError *error, NSDictionary *userData) {
+            UNNotificationCategory* loginCategory = [UNNotificationCategory
+                                                     categoryWithIdentifier:@"LOGIN"
+                                                     actions:@[]
+                                                     intentIdentifiers:@[]
+                                                     options:UNNotificationCategoryOptionCustomDismissAction];
+            
+            // Register the notification categories.
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            [center setNotificationCategories:[NSSet setWithObjects:loginCategory, nil]];
+            
+            UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+            content.title = [NSString localizedUserNotificationStringForKey:@"IA Login!" arguments:nil];
+            content.body = [NSString localizedUserNotificationStringForKey:@"IA Login Completed!\nPlease go back to WhatTuDu Now!"
+                                                                 arguments:nil];
+            content.categoryIdentifier = @"LOGIN";
+            content.sound = [UNNotificationSound defaultSound];
+            
+            // Configure the trigger
+            NSDate *now = [NSDate dateWithTimeIntervalSinceNow:1];
+            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+            NSDateComponents *date = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:now];
+            UNCalendarNotificationTrigger* trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:date repeats:NO];
+            
+            // Create the request object.
+            UNNotificationRequest* request = [UNNotificationRequest
+                                              requestWithIdentifier:@"IALogin" content:content trigger:trigger];
+
+            [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+                if (error != nil) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+            }];
+            
+            if (!error) {
+                //Everything went as planned and we have the userData back from our server.
+                [self loginSucceeded:userData];
+            } else {
+                if (error.code == 256) {
+                    [[[UIAlertView alloc] initWithTitle:@"Error!" message:@"Please enter a valid username and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Error!" message:error.userInfo[@"message"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                }
+            }
+            [self.hudButton removeFromSuperview];
+            self.hudButton = nil;
+            [ProgressHUD dismiss];
+            self.iaLogin = nil;
+            [self hideIAForm:nil];
+        } caller:self displayHUD:@selector(displayHUD)];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"Warning..." message:@"Please enter a username and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    }
+}
+
+
+-(void)loginSucceeded:(NSDictionary*)userData{
+    
+    NSError *error = nil;
+    NSString *urlString = [NSString stringWithFormat:userIDDataURLFormat, self.IALabel.text, domainKey, DomainPassword];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSString *ia_id = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error]; //Retrieve the user ID
+
+    urlString = [NSString stringWithFormat:userTokenDataURLFormat, self.IALabel.text, domainKey, DomainPassword];
+    url = [NSURL URLWithString:urlString];
+    error = nil;
+    NSString *access_token = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error]; //Retrieve the access_token
+
+    NSDictionary *authData = @{
+                               @"access_token"        :   access_token,
+                               @"id"                  :   ia_id,
+                               @"username"            :   self.IALabel.text
+                               };
+    
+    //Create or login to your app server 
+    //You will need to implement this based on your server architecture and replace YourServerUserClass accordingly.
+    [YourServerUserClass logInInBackgroundWithAuthData:authData completionBlock:^id _Nullable(YourUserClass * _Nonnull loggedInUser) {
+        //we can now update the user with the user data...
+        NSString *fn, *ln, *g, *pp, *dob, *em;
+        for (NSDictionary *data in userData) {
+            if ([data[@"attribute"] isEqualToString:@"First Name"]) {
+                fn = data[@"value"];
+            } else if ([data[@"attribute"] isEqualToString:@"Last Name"]) {
+                ln = data[@"value"];
+            } else if ([data[@"attribute"] isEqualToString:@"Emails"]) {
+                if([data[@"value"] isKindOfClass:[NSArray class]]) {
+                    em = data[@"value"][0]; //We pick the first email from the list since our system doesn't support multiple emails.
+                } else {
+                    em = data[@"value"];
+                }
+            } else if ([data[@"attribute"] isEqualToString:@"Gender"]) {
+                g = data[@"value"];
+            } else if ([data[@"attribute"] isEqualToString:@"Profile Picture"]) {
+                pp = data[@"value"];
+            } else if ([data[@"attribute"] isEqualToString:@"Date of Birth"]) {
+                dob = data[@"value"];
+            }
+        }
+        
+        NSString *fullname = [[[@"" stringByAppendingString:((fn)?fn:@"")] stringByAppendingString:((((fn)?fn:@"") && ln)?@" ":@"")] stringByAppendingString:((ln)?ln:@"")];
+        loggedInUser[@"first_name"] = fn;
+        loggedInUser[@"last_name"] = ln;
+        loggedInUser[@"fullname"] = fullname;
+        loggedInUser[@"email"] = em;
+        loggedInUser[@"gender"] = [g lowercaseString];
+        loggedInUser[@"picture_url"] = pp;
+        loggedInUser[@"dob"] = dob;
+        loggedInUser[@"ia_id"] = ia_id;
+        loggedInUser[@"ia_username"] = self.IALabel.text;
+        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            [NotificationCenter post:NOTIFICATION_USER_LOGGED_IN];
+            [self gotToMainView];
+        }];
+        return  nil;
+    }];
+    
+}
+
+- (IBAction)displayIAForm:(id)sender {
+    [UIView animateWithDuration:0.4 animations:^{
+        self.IALabel.hidden = NO;
+        self.IAButton.hidden = NO;
+    } completion:^(BOOL finished) {
+        [self.IALabel becomeFirstResponder];
+    }];
+}
+
+- (IBAction)hideIAForm:(id)sender {
+    if ([self.IALabel isFirstResponder]) {
+        [self.IALabel resignFirstResponder];
+    }
+    [UIView animateWithDuration:0.4 animations:^{
+        self.IALabel.hidden = YES;
+        self.IAButton.hidden = YES;
+    } completion:^(BOOL finished) {
+        //
+    }];
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [self loginWithIA:self.IAButton];
+    return NO;
+}
+
+You will probably need to implement 
+
+-(void)onKeyboardFrameChange:(NSNotification *)notification
+-(void)onKeyboardShow:(NSNotification *)notification
+-(void)onKeyboardHide:(NSNotification *)notification
+
+To make sure that the IALabel is visible when the keyboard is displayed...
+
+Any questions, direct message @Chris on slack https://ia-app.slack.com/messages
+
 ```
 
 
