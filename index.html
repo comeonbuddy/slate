@@ -201,7 +201,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;javascript&quot;,&quot;javascript--react&quot;,&quot;php&quot;]">
+  <body class="index" data-languages="[&quot;javascript&quot;,&quot;javascript--react&quot;,&quot;objective_c&quot;,&quot;php&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -213,6 +213,7 @@
         <div class="lang-selector">
               <a href="#" data-language-name="javascript">JavaScript</a>
               <a href="#" data-language-name="javascript--react">React</a>
+              <a href="#" data-language-name="objective_c">Objective-C</a>
               <a href="#" data-language-name="php">PHP</a>
         </div>
         <div class="search">
@@ -302,9 +303,10 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 1- For signing up / signing in.
 2- For collecting payment from your clients.</p>
 <h2 id='for-signing-up-signing-in'>For signing up / signing in.</h2>
-<blockquote>
-<p>To integrate IA on your website for signin up or signing in, add this code snippet to your website:</p>
-</blockquote>
+<ul>
+<li><p>To integrate IA on your website for signin up or signing in, you will need to add the JavaScript or React code snippet to your website.</p></li>
+<li><p>To integrate IA in your iOS App for signin up or signing in, you will need to add the Objective-C units to your project.</p></li>
+</ul>
 <pre class="highlight javascript tab-javascript"><code>  <span class="c">&lt;!--</span> <span class="nx">IA</span> <span class="nx">Authentication</span> <span class="o">--&gt;</span>
   <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
     <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
@@ -593,6 +595,475 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 <span class="o">&gt;</span> <span class="na">Note</span><span class="p">:</span> <span class="nx">If</span> <span class="nx">you</span> <span class="nx">don</span><span class="err">'</span><span class="nx">t</span> <span class="nx">want</span> <span class="nx">to</span> <span class="nx">handle</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">denied</span><span class="p">,</span> <span class="nx">or</span> <span class="nx">timeout</span><span class="p">,</span> <span class="nx">replace</span> <span class="o">*</span><span class="nx">_HANDLER</span> <span class="kd">with</span> <span class="p">{}</span>
 
 <span class="o">&gt;</span> <span class="nx">End</span> <span class="nx">of</span> <span class="nx">Step</span> <span class="mi">2</span>
+</code></pre><pre class="highlight objective_c tab-objective_c"><code>
+<span class="o">*</span> <span class="n">Step</span> <span class="mi">1</span><span class="o">:</span> <span class="n">add</span> <span class="n">the</span> <span class="n">following</span> <span class="n">units</span> <span class="n">to</span> <span class="n">your</span> <span class="n">project</span><span class="o">:</span>
+
+<span class="c1">//
+//  IALogin.h
+//  https://WhatTuDu.com
+//
+//  Created by Christophe Delhaze - http://pikorua.it (chris@pikorua.it) on 7/12/17.
+//  Copyright © 2017-2018 Christophe Delhaze. All rights reserved.
+//
+</span>
+<span class="cp">#import &lt;Foundation/Foundation.h&gt;
+</span>
+<span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">CompletionBlock</span><span class="p">)(</span><span class="n">BOOL</span> <span class="n">success</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">userData</span><span class="p">);</span>
+
+<span class="c1">//Parameters required by IA
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">client_id</span> <span class="o">=</span> <span class="s">@"client_id"</span><span class="p">;</span> <span class="c1">// Insert your client_id here
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">client_secret</span> <span class="o">=</span> <span class="s">@"client_secret"</span><span class="p">;</span> <span class="c1">// Insert your client_secret here
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">partnerDomainURL</span> <span class="o">=</span> <span class="s">@"partnerDomainURL"</span><span class="p">;</span> <span class="c1">// Enter the domain you registered with IA
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">iaAuthorizeURL</span> <span class="o">=</span> <span class="s">@"https://dashboard.instantaccess.io/api/partner/authorize"</span><span class="p">;</span> <span class="c1">// To request authorization
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">iaAuthorizeStatusURL</span> <span class="o">=</span> <span class="s">@"https://dashboard.instantaccess.io/api/partner/status"</span><span class="p">;</span> <span class="c1">// To check the request status
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">payment</span> <span class="o">=</span> <span class="s">@""</span><span class="p">;</span> <span class="c1">// Not implemented in this version - Sign up / Login only.
+</span><span class="k">const</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">statusCallInterval</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="c1">// in seconds
+</span><span class="k">const</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">statusCheckingMaximumTime</span> <span class="o">=</span> <span class="mi">600</span><span class="p">;</span> <span class="c1">// in seconds
+</span>
+<span class="c1">//Additional Parameters to fetch the user data from your server (IA can only do call back to your server so your app will need to fetch the data from there.)
+//For this example we used php script on the server to fetch the data from a mySQL database. 
+//You will need to secure your call to your server to prevent unauthorized access to your user data. 
+//In this demo code, we will use basic security and do direct calls through https using a key/password conbination.
+</span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">domainKey</span> <span class="o">=</span> <span class="s">@"your_server_secret_key"</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">domainPassword</span> <span class="o">=</span> <span class="s">@"your_server_secret_password"</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">userDataURLFormat</span> <span class="o">=</span> <span class="s">@"https://yourwebsite.com/get/userData/%@/%@/%@"</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">userIDDataURLFormat</span> <span class="o">=</span> <span class="s">@"https://yourwebsite.com/get/userIDData/%@/%@/%@"</span><span class="p">;</span>
+<span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">userTokenDataURLFormat</span> <span class="o">=</span> <span class="s">@"https://yourwebsite.com/get/userTokenData/%@/%@/%@"</span><span class="p">;</span>
+
+<span class="k">@interface</span> <span class="nc">IALogin</span> <span class="p">:</span> <span class="nc">NSObject</span>
+
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">userName</span><span class="p">;</span> <span class="c1">//Entered by the user on your app login screen
+</span><span class="k">@property</span> <span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">statusCounter</span><span class="p">;</span> 
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">connectionTimer</span><span class="p">;</span> <span class="c1">//Timer used to schedule a status check call then a user data call
+</span><span class="k">@property</span> <span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">CompletionBlock</span> <span class="n">completionBlock</span><span class="p">;</span> <span class="c1">//Block called on success or failure of the IA login
+</span>
+<span class="k">+</span><span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">IALoginWithUsername</span><span class="p">:(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span> <span class="n">userName</span><span class="p">;</span> <span class="c1">//Create an instance of the IALogin Class
+</span>
+<span class="c1">//Perform login. We pass the completion block, a caller (view) that will be displaying a HUD while the login is in process and will also allow to cancel the login process.
+</span><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">login</span><span class="p">:(</span><span class="n">CompletionBlock</span><span class="p">)</span><span class="nv">completionBlock</span> <span class="nf">caller</span><span class="p">:(</span><span class="n">id</span><span class="p">)</span><span class="nv">caller</span> <span class="nf">displayHUD</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">displayHUD</span><span class="p">;</span>
+
+<span class="c1">//Cancel login process
+</span><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">cancel</span><span class="p">;</span>
+
+<span class="k">@end</span>
+
+
+<span class="c1">//
+//  IALogin.m
+//  https://WhatTuDu.com
+//
+//  Created by Christophe Delhaze - http://pikorua.it (chris@pikorua.it) on 7/12/17.
+//  Copyright © 2017-2018 Christophe Delhaze. All rights reserved.
+//
+</span>
+<span class="cp">#import "IALogin.h"
+</span>
+<span class="cp">#import &lt;UserNotifications/UserNotifications.h&gt;
+</span>
+<span class="k">@implementation</span> <span class="nc">IALogin</span>
+
+<span class="cm">/* Create and instance of IALogin Class and set the userName */</span>
+<span class="k">+</span><span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">IALoginWithUsername</span><span class="p">:(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span> <span class="n">userName</span><span class="p">{</span>
+    <span class="n">IALogin</span> <span class="o">*</span><span class="n">iaLogin</span> <span class="o">=</span> <span class="p">[</span><span class="n">IALogin</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="n">iaLogin</span><span class="p">.</span><span class="n">userName</span> <span class="o">=</span> <span class="n">userName</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">iaLogin</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* Cancel the login process*/</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">cancel</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">connectionTimer</span> <span class="nf">invalidate</span><span class="p">];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">connectionTimer</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nf">errorWithDomain</span><span class="p">:</span><span class="s">@"com.IA.error"</span> <span class="nf">code</span><span class="p">:</span><span class="mi">2</span> <span class="n">userInfo</span><span class="o">:</span><span class="p">@{</span><span class="s">@"message"</span><span class="o">:</span><span class="s">@"User Cancelled IA Login."</span><span class="p">}];</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/* Start the login process*/</span>
+<span class="cm">/* In a perfect world, Your app would be able to open IA App once the login start and once the user is done with the login process, IA App would open back your app to complete the login */</span>
+<span class="cm">/* At the present stage, IA App doesn't have an URL Scheme and doesn't allow to call your app URL Scheme. */</span>
+<span class="cm">/* As a work around, IA server will send a push notification to proceed with the login. Your app will be using Local Notifications to bring back the user into your app once the login is complete*/</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">login</span><span class="o">:</span><span class="p">(</span><span class="n">CompletionBlock</span><span class="p">)</span><span class="n">completionBlock</span> <span class="n">caller</span><span class="o">:</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">caller</span> <span class="n">displayHUD</span><span class="o">:</span><span class="p">(</span><span class="n">SEL</span><span class="p">)</span><span class="n">displayHUD</span><span class="p">{</span>
+    <span class="n">UNUserNotificationCenter</span><span class="o">*</span> <span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNUserNotificationCenter</span> <span class="nf">currentNotificationCenter</span><span class="p">];</span>
+    <span class="p">[</span><span class="n">center</span> <span class="nf">getNotificationSettingsWithCompletionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UNNotificationSettings</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">settings</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">settings</span><span class="p">.</span><span class="n">authorizationStatus</span> <span class="o">==</span> <span class="n">UNAuthorizationStatusNotDetermined</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">UIAlertController</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAlertController</span> <span class="nf">alertControllerWithTitle</span><span class="p">:</span><span class="s">@"IA Works better with Local Notifications"</span> <span class="nf">message</span><span class="p">:</span><span class="s">@"Please allow Local Notifications to Log In with IA."</span> <span class="n">preferredStyle</span><span class="o">:</span><span class="n">UIAlertControllerStyleAlert</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">alert</span> <span class="nf">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nf">actionWithTitle</span><span class="p">:</span><span class="s">@"Nope :("</span> <span class="nf">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDestructive</span> <span class="nf">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">self</span> <span class="nf">proceedWithLogin</span><span class="p">:</span><span class="n">completionBlock</span><span class="p">];</span>
+            <span class="p">}]];</span>
+            <span class="p">[</span><span class="n">alert</span> <span class="nf">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nf">actionWithTitle</span><span class="p">:</span><span class="s">@"Sounds Great :D"</span> <span class="nf">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDefault</span> <span class="nf">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">center</span> <span class="nf">requestAuthorizationWithOptions</span><span class="p">:(</span><span class="n">UNAuthorizationOptionAlert</span> <span class="o">+</span> <span class="n">UNAuthorizationOptionSound</span> <span class="o">+</span> <span class="n">UNAuthorizationOptionBadge</span><span class="p">)</span>
+                                      <span class="nf">completionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">granted</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+                                          <span class="p">[</span><span class="n">caller</span> <span class="nf">performSelectorOnMainThread</span><span class="p">:</span><span class="n">displayHUD</span> <span class="nf">withObject</span><span class="p">:</span><span class="nb">nil</span> <span class="n">waitUntilDone</span><span class="o">:</span><span class="nb">YES</span><span class="p">];</span>
+                                          <span class="p">[</span><span class="n">self</span> <span class="nf">proceedWithLogin</span><span class="p">:</span><span class="n">completionBlock</span><span class="p">];</span>
+                                      <span class="p">}];</span>
+            <span class="p">}]];</span>
+            <span class="p">[[[[</span><span class="n">UIApplication</span> <span class="nf">sharedApplication</span><span class="p">]</span> <span class="nf">keyWindow</span><span class="p">]</span> <span class="nf">rootViewController</span><span class="p">]</span> <span class="nf">presentViewController</span><span class="p">:</span><span class="n">alert</span> <span class="nf">animated</span><span class="p">:</span><span class="nb">YES</span> <span class="n">completion</span><span class="o">:^</span><span class="p">{</span>
+
+            <span class="p">}];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">caller</span> <span class="nf">performSelectorOnMainThread</span><span class="p">:</span><span class="n">displayHUD</span> <span class="nf">withObject</span><span class="p">:</span><span class="nb">nil</span> <span class="n">waitUntilDone</span><span class="o">:</span><span class="nb">YES</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">self</span> <span class="nf">proceedWithLogin</span><span class="p">:</span><span class="n">completionBlock</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}];</span>
+<span class="p">}</span>
+
+<span class="cm">/* Proceed with the actual login. We will call IA server to request authorization*/</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">proceedWithLogin</span><span class="o">:</span><span class="p">(</span><span class="n">CompletionBlock</span><span class="p">)</span><span class="n">completionBlock</span><span class="p">{</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span> <span class="o">=</span> <span class="n">completionBlock</span><span class="p">;</span>
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">urlString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="s">@"%@?client_id=%@&amp;client_secret=%@&amp;user_identifier=%@"</span><span class="p">,</span> <span class="n">iaAuthorizeURL</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">userName</span><span class="p">];</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">JSONString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithContentsOfURL</span><span class="p">:[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="n">urlString</span><span class="p">]</span> <span class="nf">encoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">loginAuthenticationResponse</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">JSONString</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">NSData</span><span class="o">*</span> <span class="n">jsonEventsData</span> <span class="o">=</span> <span class="p">[</span><span class="n">JSONString</span> <span class="nf">dataUsingEncoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">jsonEventsData</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+            <span class="n">loginAuthenticationResponse</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSJSONSerialization</span>
+                                           <span class="nf">JSONObjectWithData</span><span class="p">:</span><span class="n">jsonEventsData</span>
+                                           <span class="nf">options</span><span class="p">:</span><span class="mi">0</span>
+                                           <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+              <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+              <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">([</span><span class="n">loginAuthenticationResponse</span><span class="p">[</span><span class="s">@"success"</span><span class="p">]</span><span class="nf">boolValue</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">connectionTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nf">scheduledTimerWithTimeInterval</span><span class="p">:</span><span class="n">statusCallInterval</span> <span class="nf">repeats</span><span class="p">:</span><span class="nb">NO</span> <span class="n">block</span><span class="o">:^</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">timer</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">self</span> <span class="nf">checkStatus</span><span class="p">];</span>
+            <span class="p">}];</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">checkStatus</span> <span class="p">{</span>
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">urlString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="s">@"%@?client_id=%@&amp;client_secret=%@&amp;user_identifier=%@"</span><span class="p">,</span> <span class="n">iaAuthorizeStatusURL</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">userName</span><span class="p">];</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">JSONString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithContentsOfURL</span><span class="p">:[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="n">urlString</span><span class="p">]</span> <span class="nf">encoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">loginAuthenticationResponse</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">JSONString</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">NSData</span><span class="o">*</span> <span class="n">jsonEventsData</span> <span class="o">=</span> <span class="p">[</span><span class="n">JSONString</span> <span class="nf">dataUsingEncoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">jsonEventsData</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+            <span class="n">loginAuthenticationResponse</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSJSONSerialization</span>
+                                           <span class="nf">JSONObjectWithData</span><span class="p">:</span><span class="n">jsonEventsData</span>
+                                           <span class="nf">options</span><span class="p">:</span><span class="mi">0</span>
+                                           <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span> <span class="p">([</span><span class="n">loginAuthenticationResponse</span><span class="p">[</span><span class="s">@"success"</span><span class="p">]</span> <span class="nf">boolValue</span><span class="p">]</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">loginAuthenticationResponse</span><span class="p">[</span><span class="s">@"message"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span> <span class="s">@"User has previously authorized this partner"</span> <span class="p">])</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">self</span> <span class="nf">authSuccess</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">self</span> <span class="nf">updateStatus</span><span class="p">:</span><span class="n">loginAuthenticationResponse</span><span class="p">[</span><span class="s">@"data"</span><span class="p">]];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">updateStatus</span><span class="o">:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">current</span> <span class="p">{</span>
+    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">status</span> <span class="o">=</span> <span class="p">@{</span><span class="s">@"approve"</span><span class="o">:</span><span class="mi">@1</span><span class="p">,</span><span class="s">@"deny"</span><span class="o">:</span><span class="mi">@2</span><span class="p">};</span>
+    <span class="k">switch</span> <span class="p">([</span><span class="n">status</span><span class="p">[</span><span class="nf">current</span><span class="p">]</span> <span class="nf">intValue</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+             <span class="p">[</span><span class="n">self</span> <span class="nf">authSuccess</span><span class="p">];</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">self</span> <span class="nf">authDenied</span><span class="p">];</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">statusCounter</span> <span class="o">*</span> <span class="n">statusCallInterval</span> <span class="o">&gt;</span> <span class="n">statusCheckingMaximumTime</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">self</span> <span class="nf">authTimeout</span><span class="p">];</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">statusCounter</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">connectionTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nf">scheduledTimerWithTimeInterval</span><span class="p">:</span><span class="n">statusCallInterval</span> <span class="nf">repeats</span><span class="p">:</span><span class="nb">NO</span> <span class="n">block</span><span class="o">:^</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">timer</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="p">[</span><span class="n">self</span> <span class="nf">checkStatus</span><span class="p">];</span>
+                <span class="p">}];</span>
+            <span class="p">});</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">authSuccess</span><span class="p">{</span>
+    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">connectionTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nf">scheduledTimerWithTimeInterval</span><span class="p">:</span><span class="n">statusCallInterval</span> <span class="nf">repeats</span><span class="p">:</span><span class="nb">NO</span> <span class="n">block</span><span class="o">:^</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">timer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">self</span> <span class="nf">getUserData</span><span class="p">];</span>
+        <span class="p">}];</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">authDenied</span><span class="p">{</span>
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nf">errorWithDomain</span><span class="p">:</span><span class="s">@"com.IA.error"</span> <span class="nf">code</span><span class="p">:</span><span class="mi">1</span> <span class="n">userInfo</span><span class="o">:</span><span class="p">@{</span><span class="s">@"message"</span><span class="o">:</span><span class="s">@"Authentication Denied"</span><span class="p">}];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">authTimeout</span><span class="p">{</span>
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nf">errorWithDomain</span><span class="p">:</span><span class="s">@"com.IA.error"</span> <span class="nf">code</span><span class="p">:</span><span class="mi">0</span> <span class="n">userInfo</span><span class="o">:</span><span class="p">@{</span><span class="s">@"message"</span><span class="o">:</span><span class="s">@"Authentication Timed Out"</span><span class="p">}];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">getUserData</span> <span class="p">{</span>
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">urlString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="n">userDataURLFormat</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">userName</span><span class="p">,</span> <span class="n">domainKey</span><span class="p">,</span> <span class="n">domainPassword</span><span class="p">];</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">JSONString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithContentsOfURL</span><span class="p">:[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="n">urlString</span><span class="p">]</span> <span class="nf">encoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">userDataResponse</span><span class="p">;</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">JSONString</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">NSData</span><span class="o">*</span> <span class="n">jsonEventsData</span> <span class="o">=</span> <span class="p">[</span><span class="n">JSONString</span> <span class="nf">dataUsingEncoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">jsonEventsData</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">userDataResponse</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSJSONSerialization</span>
+                                           <span class="nf">JSONObjectWithData</span><span class="p">:</span><span class="n">jsonEventsData</span>
+                                           <span class="nf">options</span><span class="p">:</span><span class="mi">0</span>
+                                           <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">((</span><span class="n">error</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="n">JSONString</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">YES</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">userDataResponse</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nf">errorWithDomain</span><span class="p">:</span><span class="s">@"com.IA.error"</span> <span class="nf">code</span><span class="p">:</span><span class="mi">2</span> <span class="n">userInfo</span><span class="o">:</span><span class="p">@{</span><span class="s">@"message"</span><span class="o">:</span><span class="s">@"Invalid User Data Returned"</span><span class="p">}];</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">completionBlock</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+
+<span class="o">*</span> <span class="n">Step</span> <span class="mi">2</span><span class="o">:</span> <span class="n">Add</span> <span class="n">The</span> <span class="n">UI</span> <span class="n">elements</span> <span class="n">On</span> <span class="n">you</span> <span class="n">login</span> <span class="n">page</span><span class="o">:</span>
+
+<span class="n">You</span> <span class="n">will</span> <span class="n">need</span> <span class="mi">2</span> <span class="n">UIButton</span><span class="err">'</span><span class="n">s</span> <span class="n">and</span> <span class="mi">1</span> <span class="n">UITextField</span><span class="p">.</span>
+
+<span class="mi">1</span> <span class="n">Button</span> <span class="p">(</span><span class="n">IALoginButton</span><span class="p">)</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="n">make</span> <span class="n">the</span> <span class="n">other</span> <span class="n">button</span> <span class="n">and</span> <span class="n">text</span> <span class="n">field</span> <span class="n">visible</span><span class="p">.</span> 
+<span class="n">By</span> <span class="k">default</span> <span class="n">that</span> <span class="n">button</span> <span class="n">will</span> <span class="n">use</span> <span class="n">the</span> <span class="n">IA</span> <span class="n">Logo</span><span class="p">.</span> <span class="n">Alternatively</span> <span class="n">as</span> <span class="n">I</span> <span class="n">did</span> <span class="k">in</span> <span class="n">WhatTuDu</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">create</span> <span class="n">a</span> <span class="n">custom</span> <span class="n">button</span> <span class="n">that</span> <span class="n">integrate</span> <span class="n">nicely</span> <span class="k">in</span> <span class="n">your</span> <span class="n">UI</span><span class="p">.</span>
+<span class="n">See</span> <span class="n">Resources</span> <span class="n">on</span> <span class="n">the</span> <span class="n">left</span><span class="p">.</span>
+
+<span class="n">The</span> <span class="n">text</span> <span class="n">field</span> <span class="p">(</span><span class="n">IALabel</span><span class="p">)</span> <span class="n">is</span> <span class="n">used</span> <span class="n">by</span> <span class="n">the</span> <span class="n">user</span> <span class="n">to</span> <span class="n">input</span> <span class="n">his</span> <span class="n">user</span> <span class="n">name</span> <span class="n">and</span> <span class="n">the</span> <span class="mi">2</span><span class="n">nd</span> <span class="n">button</span> <span class="p">(</span><span class="n">IAButton</span><span class="p">)</span> <span class="n">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">proceed</span> <span class="n">with</span> <span class="n">the</span> <span class="n">login</span><span class="p">.</span>
+
+</code></pre>
+<p><span style="padding: 10px; width: 100%; background: grey; display: block;margin-left: -28px;padding-left: 28px;padding-right: 28px;">
+<strong>iOS Resources:</strong><br/><br/>
+* IA Button:<br/><img style="padding: 10px;" src="images/IAButton.png"/><br/>
+* IA Logo for custom buttons:<br/><img style="padding: 10px;" src="images/whitehand.png"/><br/>
+* Custom Button Example:<br/><img style="padding: 10px;" width="350" src="images/WhatTuDu.png"/><br/>
+</span></p>
+<pre class="highlight objective_c tab-objective_c"><code>
+<span class="o">*</span> <span class="n">Step</span> <span class="mi">3</span><span class="o">:</span> <span class="n">In</span> <span class="n">the</span> <span class="n">LoginViewController</span><span class="p">.</span><span class="n">h</span> <span class="n">add</span> <span class="o">/</span> <span class="n">change</span> <span class="n">the</span> <span class="n">following</span>
+
+<span class="k">@class</span> <span class="nc">IALogin</span><span class="p">;</span>
+
+<span class="k">@interface</span> <span class="nc">LoginViewController</span> <span class="p">:</span> <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UITextFieldDelegate</span><span class="p">,</span><span class="n">UIViewControllerTransitioningDelegate</span><span class="o">&gt;</span>
+<span class="o">-</span> <span class="p">(</span><span class="n">IBAction</span><span class="p">)</span><span class="n">loginWithIA</span><span class="o">:</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">IBAction</span><span class="p">)</span><span class="nf">displayIAForm</span><span class="p">:(</span><span class="n">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">IALoginButton</span><span class="p">;</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">IAButton</span><span class="p">;</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">IALabel</span><span class="p">;</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">IALogin</span> <span class="o">*</span><span class="n">iaLogin</span><span class="p">;</span>
+
+
+<span class="o">*</span> <span class="n">Step</span> <span class="mi">4</span><span class="o">:</span> <span class="n">In</span> <span class="n">LoginViewController</span><span class="p">.</span><span class="n">m</span> <span class="n">add</span> <span class="n">the</span> <span class="n">following</span>
+
+<span class="cp">#import "IALogin.h"
+#import &lt;UserNotifications/UserNotifications.h&gt;
+</span>
+<span class="n">then</span> <span class="k">in</span> <span class="n">the</span> <span class="k">@implementation</span> <span class="nc">part</span><span class="o">:</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span> <span class="p">{</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+    <span class="c1">//keep whatever other code you had in there...
+</span><span class="p">}</span>
+
+
+<span class="c1">//Implement the cancelButtonTapped to your need. 
+//We hide the HUD and cancel the login then nil the iaLogin object.
+</span><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">cancelButtonTapped</span><span class="o">:</span><span class="p">(</span><span class="n">UIButton</span><span class="o">*</span><span class="p">)</span><span class="n">sender</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">iaLogin</span> <span class="nf">cancel</span><span class="p">];</span> <span class="c1">//Required
+</span>    <span class="n">self</span><span class="p">.</span><span class="n">iaLogin</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span> <span class="c1">// Required
+</span>    <span class="p">[</span><span class="n">ProgressHUD</span> <span class="nf">dismiss</span><span class="p">];</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nf">hideIAForm</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span> <span class="c1">// Required
+</span><span class="p">}</span>
+
+
+<span class="c1">//Implement the displayHUD to your need. 
+//You have an example of implementation using a modified version of ProgressHUD here...
+</span><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">displayHUD</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">ProgressHUD</span> <span class="nf">show</span><span class="p">:</span><span class="s">@"Please login using IA App or Tap here to cancel."</span> <span class="nf">Interaction</span><span class="p">:</span><span class="nb">NO</span><span class="p">];</span>
+    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="nf">currentRunLoop</span><span class="p">]</span> <span class="nf">runUntilDate</span><span class="p">:[</span><span class="n">NSDate</span> <span class="nf">dateWithTimeIntervalSinceNow</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">]];</span>
+    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="nf">mainRunLoop</span><span class="p">]</span> <span class="nf">runUntilDate</span><span class="p">:[</span><span class="n">NSDate</span> <span class="nf">dateWithTimeIntervalSinceNow</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">]];</span>
+    <span class="n">ProgressHUD</span> <span class="o">*</span><span class="n">hud</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProgressHUD</span> <span class="nf">shared</span><span class="p">];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nf">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="nf">addTarget</span><span class="p">:</span><span class="n">self</span> <span class="nf">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">cancelButtonTapped</span><span class="o">:</span><span class="p">)</span> <span class="n">forControlEvents</span><span class="o">:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">hudButton</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">hud</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">hudButton</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">zPosition</span> <span class="o">=</span> <span class="n">CGFLOAT_MAX</span><span class="p">;</span>
+    <span class="p">[</span><span class="n">hud</span><span class="p">.</span><span class="n">backgroundView</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">hudButton</span><span class="p">];</span>
+    <span class="n">hud</span><span class="p">.</span><span class="n">backgroundView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">zPosition</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">IBAction</span><span class="p">)</span><span class="n">loginWithIA</span><span class="o">:</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">sender</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@""</span><span class="p">])</span> <span class="p">{</span> <span class="c1">//we need a userName
+</span>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span> <span class="nf">resignFirstResponder</span><span class="p">];</span>
+
+        <span class="n">self</span><span class="p">.</span><span class="n">iaLogin</span> <span class="o">=</span> <span class="p">[</span><span class="n">IALogin</span> <span class="nf">IALoginWithUsername</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span><span class="p">];</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">iaLogin</span> <span class="nf">login</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">success</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">userData</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">UNNotificationCategory</span><span class="o">*</span> <span class="n">loginCategory</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNNotificationCategory</span>
+                                                     <span class="nf">categoryWithIdentifier</span><span class="p">:</span><span class="s">@"LOGIN"</span>
+                                                     <span class="nf">actions</span><span class="p">:@[]</span>
+                                                     <span class="nl">intentIdentifiers:</span><span class="p">@[]</span>
+                                                     <span class="nl">options:</span><span class="n">UNNotificationCategoryOptionCustomDismissAction</span><span class="p">];</span>
+
+            <span class="c1">// Register the notification categories.
+</span>            <span class="n">UNUserNotificationCenter</span><span class="o">*</span> <span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNUserNotificationCenter</span> <span class="nf">currentNotificationCenter</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">center</span> <span class="nf">setNotificationCategories</span><span class="p">:[</span><span class="n">NSSet</span> <span class="nf">setWithObjects</span><span class="p">:</span><span class="n">loginCategory</span><span class="p">,</span> <span class="nb">nil</span><span class="p">]];</span>
+
+            <span class="n">UNMutableNotificationContent</span><span class="o">*</span> <span class="n">content</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UNMutableNotificationContent</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+            <span class="n">content</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">localizedUserNotificationStringForKey</span><span class="p">:</span><span class="s">@"IA Login!"</span> <span class="nf">arguments</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+            <span class="n">content</span><span class="p">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">localizedUserNotificationStringForKey</span><span class="p">:</span><span class="s">@"IA Login Completed!</span><span class="se">\n</span><span class="s">Please go back to WhatTuDu Now!"</span>
+                                                                 <span class="nf">arguments</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+            <span class="n">content</span><span class="p">.</span><span class="n">categoryIdentifier</span> <span class="o">=</span> <span class="s">@"LOGIN"</span><span class="p">;</span>
+            <span class="n">content</span><span class="p">.</span><span class="n">sound</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNNotificationSound</span> <span class="nf">defaultSound</span><span class="p">];</span>
+
+            <span class="c1">// Configure the trigger
+</span>            <span class="n">NSDate</span> <span class="o">*</span><span class="n">now</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="nf">dateWithTimeIntervalSinceNow</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithCalendarIdentifier</span><span class="p">:</span> <span class="n">NSCalendarIdentifierGregorian</span><span class="p">];</span>
+            <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nf">components</span><span class="p">:</span><span class="n">NSCalendarUnitYear</span><span class="o">|</span><span class="n">NSCalendarUnitMonth</span><span class="o">|</span><span class="n">NSCalendarUnitDay</span><span class="o">|</span><span class="n">NSCalendarUnitHour</span><span class="o">|</span><span class="n">NSCalendarUnitMinute</span><span class="o">|</span><span class="n">NSCalendarUnitSecond</span> <span class="nf">fromDate</span><span class="p">:</span><span class="n">now</span><span class="p">];</span>
+            <span class="n">UNCalendarNotificationTrigger</span><span class="o">*</span> <span class="n">trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNCalendarNotificationTrigger</span> <span class="nf">triggerWithDateMatchingComponents</span><span class="p">:</span><span class="n">date</span> <span class="nf">repeats</span><span class="p">:</span><span class="nb">NO</span><span class="p">];</span>
+
+            <span class="c1">// Create the request object.
+</span>            <span class="n">UNNotificationRequest</span><span class="o">*</span> <span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNNotificationRequest</span>
+                                              <span class="nf">requestWithIdentifier</span><span class="p">:</span><span class="s">@"IALogin"</span> <span class="nf">content</span><span class="p">:</span><span class="n">content</span> <span class="n">trigger</span><span class="o">:</span><span class="n">trigger</span><span class="p">];</span>
+
+            <span class="p">[</span><span class="n">center</span> <span class="nf">addNotificationRequest</span><span class="p">:</span><span class="n">request</span> <span class="nf">withCompletionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"%@"</span><span class="p">,</span> <span class="n">error</span><span class="p">.</span><span class="n">localizedDescription</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}];</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">//Everything went as planned and we have the userData back from our server.
+</span>                <span class="p">[</span><span class="n">self</span> <span class="nf">loginSucceeded</span><span class="p">:</span><span class="n">userData</span><span class="p">];</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">.</span><span class="n">code</span> <span class="o">==</span> <span class="mi">256</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="p">[[[</span><span class="n">UIAlertView</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithTitle</span><span class="p">:</span><span class="s">@"Error!"</span> <span class="nf">message</span><span class="p">:</span><span class="s">@"Please enter a valid username and try again."</span> <span class="nf">delegate</span><span class="p">:</span><span class="nb">nil</span> <span class="nf">cancelButtonTitle</span><span class="p">:</span><span class="s">@"OK"</span> <span class="n">otherButtonTitles</span><span class="o">:</span> <span class="nb">nil</span><span class="p">]</span> <span class="n">show</span><span class="p">];</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="p">[[[</span><span class="n">UIAlertView</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithTitle</span><span class="p">:</span><span class="s">@"Error!"</span> <span class="nf">message</span><span class="p">:</span><span class="n">error</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="s">@"message"</span><span class="p">]</span> <span class="nf">delegate</span><span class="p">:</span><span class="nb">nil</span> <span class="nf">cancelButtonTitle</span><span class="p">:</span><span class="s">@"OK"</span> <span class="n">otherButtonTitles</span><span class="o">:</span> <span class="nb">nil</span><span class="p">]</span> <span class="n">show</span><span class="p">];</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+            <span class="p">[</span><span class="n">ProgressHUD</span> <span class="nf">dismiss</span><span class="p">];</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">iaLogin</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+            <span class="p">[</span><span class="n">self</span> <span class="nf">hideIAForm</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+        <span class="p">}</span> <span class="nf">caller</span><span class="p">:</span><span class="n">self</span> <span class="n">displayHUD</span><span class="o">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">displayHUD</span><span class="p">)];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="p">[[[</span><span class="n">UIAlertView</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithTitle</span><span class="p">:</span><span class="s">@"Warning..."</span> <span class="nf">message</span><span class="p">:</span><span class="s">@"Please enter a username and try again."</span> <span class="nf">delegate</span><span class="p">:</span><span class="nb">nil</span> <span class="nf">cancelButtonTitle</span><span class="p">:</span><span class="s">@"OK"</span> <span class="n">otherButtonTitles</span><span class="o">:</span> <span class="nb">nil</span><span class="p">]</span> <span class="n">show</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">loginSucceeded</span><span class="o">:</span><span class="p">(</span><span class="n">NSDictionary</span><span class="o">*</span><span class="p">)</span><span class="n">userData</span><span class="p">{</span>
+
+    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">urlString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="n">userIDDataURLFormat</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="n">domainKey</span><span class="p">,</span> <span class="n">DomainPassword</span><span class="p">];</span>
+    <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="n">urlString</span><span class="p">];</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">ia_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithContentsOfURL</span><span class="p">:</span><span class="n">url</span> <span class="nf">encoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span> <span class="c1">//Retrieve the user ID
+</span>
+    <span class="n">urlString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithFormat</span><span class="p">:</span><span class="n">userTokenDataURLFormat</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="n">domainKey</span><span class="p">,</span> <span class="n">DomainPassword</span><span class="p">];</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nf">URLWithString</span><span class="p">:</span><span class="n">urlString</span><span class="p">];</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">access_token</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nf">stringWithContentsOfURL</span><span class="p">:</span><span class="n">url</span> <span class="nf">encoding</span><span class="p">:</span><span class="n">NSUTF8StringEncoding</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span> <span class="c1">//Retrieve the access_token
+</span>
+    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">authData</span> <span class="o">=</span> <span class="p">@{</span>
+                               <span class="s">@"access_token"</span>        <span class="o">:</span>   <span class="n">access_token</span><span class="p">,</span>
+                               <span class="s">@"id"</span>                  <span class="o">:</span>   <span class="n">ia_id</span><span class="p">,</span>
+                               <span class="s">@"username"</span>            <span class="o">:</span>   <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span>
+                               <span class="p">};</span>
+
+    <span class="c1">//Create or login to your app server 
+</span>    <span class="c1">//You will need to implement this based on your server architecture and replace YourServerUserClass accordingly.
+</span>    <span class="p">[</span><span class="n">YourServerUserClass</span> <span class="nf">logInInBackgroundWithAuthData</span><span class="p">:</span><span class="n">authData</span> <span class="nf">completionBlock</span><span class="p">:</span><span class="o">^</span><span class="n">id</span> <span class="n">_Nullable</span><span class="p">(</span><span class="n">YourUserClass</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">loggedInUser</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//we can now update the user with the user data...
+</span>        <span class="n">NSString</span> <span class="o">*</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">ln</span><span class="p">,</span> <span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="o">*</span><span class="n">pp</span><span class="p">,</span> <span class="o">*</span><span class="n">dob</span><span class="p">,</span> <span class="o">*</span><span class="n">em</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">data</span> <span class="k">in</span> <span class="n">userData</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"First Name"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"Last Name"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">ln</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"Emails"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">if</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">]</span> <span class="nf">isKindOfClass</span><span class="p">:[</span><span class="n">NSArray</span> <span class="nf">class</span><span class="p">]])</span> <span class="p">{</span>
+                    <span class="n">em</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span> <span class="c1">//We pick the first email from the list since our system doesn't support multiple emails.
+</span>                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="n">em</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"Gender"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"Profile Picture"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">pp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s">@"attribute"</span><span class="p">]</span> <span class="nf">isEqualToString</span><span class="p">:</span><span class="s">@"Date of Birth"</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">dob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">@"value"</span><span class="p">];</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">NSString</span> <span class="o">*</span><span class="n">fullname</span> <span class="o">=</span> <span class="p">[[[</span><span class="s">@""</span> <span class="nf">stringByAppendingString</span><span class="p">:((</span><span class="n">fn</span><span class="p">)?</span><span class="n">fn</span><span class="p">:</span><span class="s">@""</span><span class="p">)]</span> <span class="nf">stringByAppendingString</span><span class="p">:((((</span><span class="n">fn</span><span class="p">)?</span><span class="n">fn</span><span class="p">:</span><span class="s">@""</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">ln</span><span class="p">)?</span><span class="s">@" "</span><span class="p">:</span><span class="s">@""</span><span class="p">)]</span> <span class="nf">stringByAppendingString</span><span class="p">:((</span><span class="n">ln</span><span class="p">)?</span><span class="n">ln</span><span class="p">:</span><span class="s">@""</span><span class="p">)];</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"first_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"last_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ln</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"fullname"</span><span class="p">]</span> <span class="o">=</span> <span class="n">fullname</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"email"</span><span class="p">]</span> <span class="o">=</span> <span class="n">em</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"gender"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span> <span class="nf">lowercaseString</span><span class="p">];</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"picture_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pp</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"dob"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dob</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"ia_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ia_id</span><span class="p">;</span>
+        <span class="n">loggedInUser</span><span class="p">[</span><span class="s">@"ia_username"</span><span class="p">]</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+        <span class="p">[</span><span class="n">newUser</span> <span class="nf">saveInBackgroundWithBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">succeeded</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">NotificationCenter</span> <span class="nf">post</span><span class="p">:</span><span class="n">NOTIFICATION_USER_LOGGED_IN</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">self</span> <span class="nf">gotToMainView</span><span class="p">];</span>
+        <span class="p">}];</span>
+        <span class="k">return</span>  <span class="nb">nil</span><span class="p">;</span>
+    <span class="p">}];</span>
+
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">IBAction</span><span class="p">)</span><span class="n">displayIAForm</span><span class="o">:</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">sender</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">UIView</span> <span class="nf">animateWithDuration</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span> <span class="nf">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">IAButton</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">completion</span><span class="o">:^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span> <span class="nf">becomeFirstResponder</span><span class="p">];</span>
+    <span class="p">}];</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">IBAction</span><span class="p">)</span><span class="n">hideIAForm</span><span class="o">:</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">sender</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span> <span class="nf">isFirstResponder</span><span class="p">])</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">IALabel</span> <span class="nf">resignFirstResponder</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="p">[</span><span class="n">UIView</span> <span class="nf">animateWithDuration</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span> <span class="nf">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">IAButton</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">completion</span><span class="o">:^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//
+</span>    <span class="p">}];</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">textFieldShouldReturn</span><span class="o">:</span><span class="p">(</span><span class="n">UITextField</span> <span class="o">*</span><span class="p">)</span><span class="n">textField</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nf">loginWithIA</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">IAButton</span><span class="p">];</span>
+    <span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">You</span> <span class="n">will</span> <span class="n">probably</span> <span class="n">need</span> <span class="n">to</span> <span class="n">implement</span> 
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onKeyboardFrameChange</span><span class="o">:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onKeyboardShow</span><span class="o">:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onKeyboardHide</span><span class="o">:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
+
+<span class="n">To</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">the</span> <span class="n">IALabel</span> <span class="n">is</span> <span class="n">visible</span> <span class="n">when</span> <span class="n">the</span> <span class="n">keyboard</span> <span class="n">is</span> <span class="n">displayed</span><span class="p">...</span>
+
+<span class="n">Any</span> <span class="n">questions</span><span class="p">,</span> <span class="n">direct</span> <span class="n">message</span> <span class="err">@Chris</span> <span class="n">on</span> <span class="n">slack</span> <span class="n">https</span><span class="o">:</span><span class="c1">//ia-app.slack.com/messages
+</span>
 </code></pre><h2 id='for-collecting-payment-from-your-clients'>For collecting payment from your clients.</h2>
 <aside class="notice">
 You must replace <code>YOUR_PAYMENT_AMOUNT_WITH_THE_REGISTERED_CURRENCY_FOR_YOU_ON_IA_PLATFORM</code> with your payment that you want to collect from your user.
@@ -1231,6 +1702,7 @@ You can fetch user info with the user token via this api call at anytime.
           <div class="lang-selector">
                 <a href="#" data-language-name="javascript">JavaScript</a>
                 <a href="#" data-language-name="javascript--react">React</a>
+                <a href="#" data-language-name="objective_c">Objective-C</a>
                 <a href="#" data-language-name="php">PHP</a>
           </div>
       </div>
