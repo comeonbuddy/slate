@@ -6,6 +6,7 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - javascript--react: React
   - objective_c: Objective-C
   - php: PHP
+  - javascript: Google Cloud Functions
 
 toc_footers:
   - <a href='http://www.instantaccess.io/partner'>Partner Sign Up</a>
@@ -370,8 +371,8 @@ const static int statusCallInterval = 3; // in seconds
 const static int statusCheckingMaximumTime = 600; // in seconds
 
 //Additional Parameters to fetch the user data from your server (IA can only do call back to your server so your app will need to fetch the data from there.)
-//For this example we used php script on the server to fetch the data from a mySQL database. 
-//You will need to secure your call to your server to prevent unauthorized access to your user data. 
+//For this example we used php script on the server to fetch the data from a mySQL database.
+//You will need to secure your call to your server to prevent unauthorized access to your user data.
 //In this demo code, we will use basic security and do direct calls through https using a key/password conbination.
 const static NSString *domainKey = @"your_server_secret_key";
 const static NSString *domainPassword = @"your_server_secret_password";
@@ -382,7 +383,7 @@ const static NSString *userTokenDataURLFormat = @"https://yourwebsite.com/get/us
 @interface IALogin : NSObject
 
 @property (strong, nonatomic) NSString *userName; //Entered by the user on your app login screen
-@property (assign, nonatomic) int statusCounter; 
+@property (assign, nonatomic) int statusCounter;
 @property (strong, nonatomic) NSTimer *connectionTimer; //Timer used to schedule a status check call then a user data call
 @property (copy, nonatomic) CompletionBlock completionBlock; //Block called on success or failure of the IA login
 
@@ -448,7 +449,7 @@ const static NSString *userTokenDataURLFormat = @"https://yourwebsite.com/get/us
                                       }];
             }]];
             [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:alert animated:YES completion:^{
-                
+
             }];
         } else {
             [caller performSelectorOnMainThread:displayHUD withObject:nil waitUntilDone:YES];
@@ -570,7 +571,7 @@ const static NSString *userTokenDataURLFormat = @"https://yourwebsite.com/get/us
                                            error:&error];
         }
     }
-    
+
     if ((error == nil)&&(JSONString)) {
         self.completionBlock(YES, error, userDataResponse);
     } else {
@@ -586,7 +587,7 @@ const static NSString *userTokenDataURLFormat = @"https://yourwebsite.com/get/us
 
 You will need 2 UIButton's and 1 UITextField.
 
-1 Button (IALoginButton) will be used to make the other button and text field visible. 
+1 Button (IALoginButton) will be used to make the other button and text field visible.
 By default that button will use the IA Logo. Alternatively as I did in WhatTuDu, you can create a custom button that integrate nicely in your UI.
 See Resources on the left.
 
@@ -629,7 +630,7 @@ then in the @implementation part:
 }
 
 
-//Implement the cancelButtonTapped to your need. 
+//Implement the cancelButtonTapped to your need.
 //We hide the HUD and cancel the login then nil the iaLogin object.
 - (void)cancelButtonTapped:(UIButton*)sender{
     [self.hudButton removeFromSuperview];
@@ -641,7 +642,7 @@ then in the @implementation part:
 }
 
 
-//Implement the displayHUD to your need. 
+//Implement the displayHUD to your need.
 //You have an example of implementation using a modified version of ProgressHUD here...
 -(void)displayHUD{
     [ProgressHUD show:@"Please login using IA App or Tap here to cancel." Interaction:NO];
@@ -659,7 +660,7 @@ then in the @implementation part:
 - (IBAction)loginWithIA:(id)sender {
     if (![self.IALabel.text isEqualToString:@""]) { //we need a userName
         [self.IALabel resignFirstResponder];
-        
+
         self.iaLogin = [IALogin IALoginWithUsername:self.IALabel.text];
         [self.iaLogin login:^(BOOL success, NSError *error, NSDictionary *userData) {
             UNNotificationCategory* loginCategory = [UNNotificationCategory
@@ -667,24 +668,24 @@ then in the @implementation part:
                                                      actions:@[]
                                                      intentIdentifiers:@[]
                                                      options:UNNotificationCategoryOptionCustomDismissAction];
-            
+
             // Register the notification categories.
             UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
             [center setNotificationCategories:[NSSet setWithObjects:loginCategory, nil]];
-            
+
             UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
             content.title = [NSString localizedUserNotificationStringForKey:@"IA Login!" arguments:nil];
             content.body = [NSString localizedUserNotificationStringForKey:@"IA Login Completed!\nPlease go back to WhatTuDu Now!"
                                                                  arguments:nil];
             content.categoryIdentifier = @"LOGIN";
             content.sound = [UNNotificationSound defaultSound];
-            
+
             // Configure the trigger
             NSDate *now = [NSDate dateWithTimeIntervalSinceNow:1];
             NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
             NSDateComponents *date = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:now];
             UNCalendarNotificationTrigger* trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:date repeats:NO];
-            
+
             // Create the request object.
             UNNotificationRequest* request = [UNNotificationRequest
                                               requestWithIdentifier:@"IALogin" content:content trigger:trigger];
@@ -694,7 +695,7 @@ then in the @implementation part:
                     NSLog(@"%@", error.localizedDescription);
                 }
             }];
-            
+
             if (!error) {
                 //Everything went as planned and we have the userData back from our server.
                 [self loginSucceeded:userData];
@@ -718,7 +719,7 @@ then in the @implementation part:
 
 
 -(void)loginSucceeded:(NSDictionary*)userData{
-    
+
     NSError *error = nil;
     NSString *urlString = [NSString stringWithFormat:userIDDataURLFormat, self.IALabel.text, domainKey, DomainPassword];
     NSURL *url = [NSURL URLWithString:urlString];
@@ -734,8 +735,8 @@ then in the @implementation part:
                                @"id"                  :   ia_id,
                                @"username"            :   self.IALabel.text
                                };
-    
-    //Create or login to your app server 
+
+    //Create or login to your app server
     //You will need to implement this based on your server architecture and replace YourServerUserClass accordingly.
     [YourServerUserClass logInInBackgroundWithAuthData:authData completionBlock:^id _Nullable(YourUserClass * _Nonnull loggedInUser) {
         //we can now update the user with the user data...
@@ -759,7 +760,7 @@ then in the @implementation part:
                 dob = data[@"value"];
             }
         }
-        
+
         NSString *fullname = [[[@"" stringByAppendingString:((fn)?fn:@"")] stringByAppendingString:((((fn)?fn:@"") && ln)?@" ":@"")] stringByAppendingString:((ln)?ln:@"")];
         loggedInUser[@"first_name"] = fn;
         loggedInUser[@"last_name"] = ln;
@@ -776,7 +777,7 @@ then in the @implementation part:
         }];
         return  nil;
     }];
-    
+
 }
 
 - (IBAction)displayIAForm:(id)sender {
@@ -805,7 +806,7 @@ then in the @implementation part:
     return NO;
 }
 
-You will probably need to implement 
+You will probably need to implement
 
 -(void)onKeyboardFrameChange:(NSNotification *)notification
 -(void)onKeyboardShow:(NSNotification *)notification
@@ -1218,9 +1219,33 @@ message | It contains timeout message.
 The callback is requested from IA platform in two conditions:
 
 1- When user approved the request over IA App, the Callback URL will be called with two parameters.
-2- when the user update any information partner website has access to it. 
+2- When user update any information in partner website.
 
 ## Callback when user approve request over IA App
+
+```javascript
+
+// cloud functions dependencies.
+const functions = require('firebase-functions');
+const express = require('express');
+const app = express();
+
+// callback endpoint config.
+app.get('/', (req, res) => {
+  const authorizationCode = req.query.code;
+  const state = req.query.state;
+  const [ userid, username, email ] = state.split('@@');
+
+  // do some stuff with your received data.
+  // ...
+
+  // send an OK response.
+  res.status(200).end();
+});
+
+exports.yourCloudFunction = functions.https.onRequest(app);
+```
+
 
 ```php
 $authorizationCode = $_GET['code'];
@@ -1242,10 +1267,28 @@ code | the Authorization Code that used to fetch the user’s token from IA
 state | this string contains the userid, username and email concatenated with '@@', you can split them and use them.
 
 
-## Callback when user update any information partner website has access to it 
+## Callback when user update any information
 
 ```php
 $userId = $_POST['user_id'];
+```
+
+```javascript
+
+// ...
+
+// callback endpoint config.
+app.post('/', (req, res) => {
+  const userId = req.params.user_id;
+
+  // do some stuff with your received data.
+  // ...
+
+  // send an OK response.
+  res.status(200).end();
+});
+
+// ...
 ```
 
 
@@ -1257,7 +1300,7 @@ Parameter | Description
 --------- | -----------
 user_id | the user id for the user who updated any associated info.
 
-## fetching token for this user from IA System
+## Fetching User Access Token from IA API
 
 ```php
 //setup the request, you can also use CURLOPT_URL
@@ -1287,6 +1330,53 @@ if($result !== FALSE) {
 }
 ```
 
+```javascript
+
+// ...
+
+// you may need a npm module to make HTTP requests...
+const http = require('axios');
+
+// ...and one npm module to parse the data you're going to POST.
+const qs = require('querystring');
+
+// callback endpoint config.
+app.get('/', (req, res) => {
+  // ...
+
+  // data you're going to POST.
+  const params = {
+    code: 'the authorization code you received in previous step',
+    client_id: '<YOUR-IA_PARTNER_CLIENT_ID_KEY>',
+    client_secret: '<YOUR-IA_PARTNER_CLIENT_SECRET_KEY>',
+    redirect_uri: 'your callback url (your cloud function url)',
+    grant_type: 'authorization_code'
+  };
+
+  // HTTP request configuration.
+  const fetchAccessTokenConfig = {
+    url: 'https://dashboard.instantaccess.io/api/oauth/token',
+    method: 'POST',
+    data: qs.stringify(params)
+  };
+
+  // Instant Access API call.
+  http(fetchAccessTokenConfig)
+    .then(response => {
+
+      // do some stuff with your received data.
+      console.log(response.data);
+
+    }).catch(error => console.error(error));
+
+  // send an OK response.
+  res.status(200).end();
+});
+
+// ...
+```
+
+
 > The above command returns JSON structured like this:
 
 ```json
@@ -1300,7 +1390,7 @@ if($result !== FALSE) {
 Please use the authorization code provided previously to fetch user access token and refresh token then save it in your users record. (database, files, ...etc)
 
 <aside class="success">
-This token is required everytime your system requests user info from IA. 
+This token is required everytime your system requests user info from IA.
 </aside>
 
 ### HTTP Request
@@ -1315,7 +1405,7 @@ code | your Authorization Code that provided in the previous step
 redirect_uri | your callback url
 grant_type | always with string value 'authorization_code'
 
-## Refreshing Access Token for this user from IA System
+## Refreshing User Access Token from IA API
 
 ```php
 //setup the request, you can also use CURLOPT_URL
@@ -1345,6 +1435,35 @@ if($result !== FALSE) {
 }
 ```
 
+
+```javascript
+
+// same npm modules
+// ...
+
+// callback endpoint config.
+app.get('/', (req, res) => {
+  // ...
+
+  // the only thing that changes is the data you're going to POST.
+  const params = {
+    refresh_token: 'the authorization code you received in previous step',
+    client_id: '<YOUR-IA_PARTNER_CLIENT_ID_KEY>',
+    client_secret: '<YOUR-IA_PARTNER_CLIENT_SECRET_KEY>',
+    grant_type: 'refresh_token',
+    scope: ''
+  };
+
+  // same config you used to fetch access token.
+  // ...
+
+  // send an OK response.
+  res.status(200).end();
+});
+
+// ...
+```
+
 > The above command returns JSON structured like this:
 
 ```json
@@ -1358,7 +1477,7 @@ if($result !== FALSE) {
 Please use the refresh_token provided previously to fetch new user access token and refresh token then save it in your users record. (database, files, ...etc)
 
 <aside class="success">
-This token is required everytime your system requests user info from IA. 
+This token is required everytime your system requests user info from IA.
 </aside>
 
 ### HTTP Request
@@ -1371,10 +1490,10 @@ client_id | your IA_PARTNER_CLIENT_ID_KEY
 client_secret | your IA_PARTNER_CLIENT_SECRET_KEY
 refresh_token | your Authorization Code that provided in the previous step
 grant_type | always with string value 'refresh_token'
-scope | send it with empty string => ''
+scope | send it with empty string ''
 
 
-## Fetch User Information
+## Fetching User Information from IA API
 
 ```php
 if($result !== FALSE) {
@@ -1408,6 +1527,48 @@ if($result !== FALSE) {
 }
 ```
 
+
+```javascript
+
+// ...
+
+// callback endpoint config.
+app.get('/', (req, res) => {
+
+  // same config you used to fetch access token.
+  // ...
+
+  // and this new one.
+  const fetchUserInfoConfig = response => {
+    return {
+      url: 'https://dashboard.instantaccess.io/api/public/user',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${response.data.access_token}`
+      }
+    }
+  };
+
+  // since we are using Promises,
+  // you can chain Instant Access API calls.
+  http(fetchAccessTokenConfig)
+    .then(response => fetchUserInfoConfig(response))
+    .then(response => {
+      if (response.status === 200) {
+        const { data } = response.data;
+
+        // do some stuff with your received data
+        // (e.g. save it in your database).
+      }
+    }).catch(error => console.error(error));
+
+  // send an OK response.
+  res.status(200).end();
+});
+
+// ...
+```
+
 > The above command returns JSON structured like this:
 
 ```json
@@ -1415,9 +1576,10 @@ if($result !== FALSE) {
   "success": true,
   "message" : "User data items retrieved successfully",
   "data":[
-      "phone": "+01111111111111",
-      "Email": "test@test.com",
-  ],
+    {"attribute": "First Name", "value": "Hey"},
+    {"attribute": "Last Name", "value": "Buddy"},
+    {"attribute": "Emails", "value": "test@test.com"}
+  ]
 }
 ```
 
