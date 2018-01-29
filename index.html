@@ -201,7 +201,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;javascript&quot;,&quot;javascript--react&quot;,&quot;objective_c&quot;,&quot;php&quot;]">
+  <body class="index" data-languages="[&quot;javascript&quot;,&quot;javascript--react&quot;,&quot;objective_c&quot;,&quot;php&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -215,6 +215,7 @@
               <a href="#" data-language-name="javascript--react">React</a>
               <a href="#" data-language-name="objective_c">Objective-C</a>
               <a href="#" data-language-name="php">PHP</a>
+              <a href="#" data-language-name="javascript">Google Cloud Functions</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -256,16 +257,16 @@
                     <a href="#callback-when-user-approve-request-over-ia-app" class="toc-h2 toc-link" data-title="Callback when user approve request over IA App">Callback when user approve request over IA App</a>
                   </li>
                   <li>
-                    <a href="#callback-when-user-update-any-information-partner-website-has-access-to-it" class="toc-h2 toc-link" data-title="Callback when user update any information partner website has access to it">Callback when user update any information partner website has access to it</a>
+                    <a href="#callback-when-user-update-any-information" class="toc-h2 toc-link" data-title="Callback when user update any information">Callback when user update any information</a>
                   </li>
                   <li>
-                    <a href="#fetching-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="fetching token for this user from IA System">fetching token for this user from IA System</a>
+                    <a href="#fetching-user-access-token-from-ia-api" class="toc-h2 toc-link" data-title="Fetching User Access Token from IA API">Fetching User Access Token from IA API</a>
                   </li>
                   <li>
-                    <a href="#refreshing-access-token-for-this-user-from-ia-system" class="toc-h2 toc-link" data-title="Refreshing Access Token for this user from IA System">Refreshing Access Token for this user from IA System</a>
+                    <a href="#refreshing-user-access-token-from-ia-api" class="toc-h2 toc-link" data-title="Refreshing User Access Token from IA API">Refreshing User Access Token from IA API</a>
                   </li>
                   <li>
-                    <a href="#fetch-user-information" class="toc-h2 toc-link" data-title="Fetch User Information">Fetch User Information</a>
+                    <a href="#fetching-user-information-from-ia-api" class="toc-h2 toc-link" data-title="Fetching User Information from IA API">Fetching User Information from IA API</a>
                   </li>
               </ul>
           </li>
@@ -621,8 +622,8 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 </span><span class="k">const</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">statusCheckingMaximumTime</span> <span class="o">=</span> <span class="mi">600</span><span class="p">;</span> <span class="c1">// in seconds
 </span>
 <span class="c1">//Additional Parameters to fetch the user data from your server (IA can only do call back to your server so your app will need to fetch the data from there.)
-//For this example we used php script on the server to fetch the data from a mySQL database. 
-//You will need to secure your call to your server to prevent unauthorized access to your user data. 
+//For this example we used php script on the server to fetch the data from a mySQL database.
+//You will need to secure your call to your server to prevent unauthorized access to your user data.
 //In this demo code, we will use basic security and do direct calls through https using a key/password conbination.
 </span><span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">domainKey</span> <span class="o">=</span> <span class="s">@"your_server_secret_key"</span><span class="p">;</span>
 <span class="k">const</span> <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">domainPassword</span> <span class="o">=</span> <span class="s">@"your_server_secret_password"</span><span class="p">;</span>
@@ -633,7 +634,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 <span class="k">@interface</span> <span class="nc">IALogin</span> <span class="p">:</span> <span class="nc">NSObject</span>
 
 <span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">userName</span><span class="p">;</span> <span class="c1">//Entered by the user on your app login screen
-</span><span class="k">@property</span> <span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">statusCounter</span><span class="p">;</span> 
+</span><span class="k">@property</span> <span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">statusCounter</span><span class="p">;</span>
 <span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">connectionTimer</span><span class="p">;</span> <span class="c1">//Timer used to schedule a status check call then a user data call
 </span><span class="k">@property</span> <span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">CompletionBlock</span> <span class="n">completionBlock</span><span class="p">;</span> <span class="c1">//Block called on success or failure of the IA login
 </span>
@@ -837,7 +838,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 
 <span class="n">You</span> <span class="n">will</span> <span class="n">need</span> <span class="mi">2</span> <span class="n">UIButton</span><span class="err">'</span><span class="n">s</span> <span class="n">and</span> <span class="mi">1</span> <span class="n">UITextField</span><span class="p">.</span>
 
-<span class="mi">1</span> <span class="n">Button</span> <span class="p">(</span><span class="n">IALoginButton</span><span class="p">)</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="n">make</span> <span class="n">the</span> <span class="n">other</span> <span class="n">button</span> <span class="n">and</span> <span class="n">text</span> <span class="n">field</span> <span class="n">visible</span><span class="p">.</span> 
+<span class="mi">1</span> <span class="n">Button</span> <span class="p">(</span><span class="n">IALoginButton</span><span class="p">)</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="n">make</span> <span class="n">the</span> <span class="n">other</span> <span class="n">button</span> <span class="n">and</span> <span class="n">text</span> <span class="n">field</span> <span class="n">visible</span><span class="p">.</span>
 <span class="n">By</span> <span class="k">default</span> <span class="n">that</span> <span class="n">button</span> <span class="n">will</span> <span class="n">use</span> <span class="n">the</span> <span class="n">IA</span> <span class="n">Logo</span><span class="p">.</span> <span class="n">Alternatively</span> <span class="n">as</span> <span class="n">I</span> <span class="n">did</span> <span class="k">in</span> <span class="n">WhatTuDu</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">create</span> <span class="n">a</span> <span class="n">custom</span> <span class="n">button</span> <span class="n">that</span> <span class="n">integrate</span> <span class="n">nicely</span> <span class="k">in</span> <span class="n">your</span> <span class="n">UI</span><span class="p">.</span>
 <span class="n">See</span> <span class="n">Resources</span> <span class="n">on</span> <span class="n">the</span> <span class="n">left</span><span class="p">.</span>
 
@@ -846,9 +847,9 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 </code></pre>
 <p><span style="padding: 10px; width: 100%; background: grey; display: block;margin-left: -28px;padding-left: 28px;padding-right: 28px;">
 <strong>iOS Resources:</strong><br/><br/>
-* IA Button:<br/><img style="padding: 10px;" src="images/IAButton.png"/><br/>
-* IA Logo for custom buttons:<br/><img style="padding: 10px;" src="images/whitehand.png"/><br/>
-* Custom Button Example:<br/><img style="padding: 10px;" width="350" src="images/WhatTuDu.png"/><br/>
+* IA Button:<br/><img style="padding: 10px;" src="/images/IAButton.png"/><br/>
+* IA Logo for custom buttons:<br/><img style="padding: 10px;" src="/images/whitehand.png"/><br/>
+* Custom Button Example:<br/><img style="padding: 10px;" width="350" src="/images/WhatTuDu.png"/><br/>
 </span></p>
 <pre class="highlight objective_c tab-objective_c"><code>
 <span class="o">*</span> <span class="n">Step</span> <span class="mi">3</span><span class="o">:</span> <span class="n">In</span> <span class="n">the</span> <span class="n">LoginViewController</span><span class="p">.</span><span class="n">h</span> <span class="n">add</span> <span class="o">/</span> <span class="n">change</span> <span class="n">the</span> <span class="n">following</span>
@@ -878,7 +879,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 </span><span class="p">}</span>
 
 
-<span class="c1">//Implement the cancelButtonTapped to your need. 
+<span class="c1">//Implement the cancelButtonTapped to your need.
 //We hide the HUD and cancel the login then nil the iaLogin object.
 </span><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">cancelButtonTapped</span><span class="o">:</span><span class="p">(</span><span class="n">UIButton</span><span class="o">*</span><span class="p">)</span><span class="n">sender</span><span class="p">{</span>
     <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">hudButton</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
@@ -890,7 +891,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
 </span><span class="p">}</span>
 
 
-<span class="c1">//Implement the displayHUD to your need. 
+<span class="c1">//Implement the displayHUD to your need.
 //You have an example of implementation using a modified version of ProgressHUD here...
 </span><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">displayHUD</span><span class="p">{</span>
     <span class="p">[</span><span class="n">ProgressHUD</span> <span class="nf">show</span><span class="p">:</span><span class="s">@"Please login using IA App or Tap here to cancel."</span> <span class="nf">Interaction</span><span class="p">:</span><span class="nb">NO</span><span class="p">];</span>
@@ -984,7 +985,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
                                <span class="s">@"username"</span>            <span class="o">:</span>   <span class="n">self</span><span class="p">.</span><span class="n">IALabel</span><span class="p">.</span><span class="n">text</span>
                                <span class="p">};</span>
 
-    <span class="c1">//Create or login to your app server 
+    <span class="c1">//Create or login to your app server
 </span>    <span class="c1">//You will need to implement this based on your server architecture and replace YourServerUserClass accordingly.
 </span>    <span class="p">[</span><span class="n">YourServerUserClass</span> <span class="nf">logInInBackgroundWithAuthData</span><span class="p">:</span><span class="n">authData</span> <span class="nf">completionBlock</span><span class="p">:</span><span class="o">^</span><span class="n">id</span> <span class="n">_Nullable</span><span class="p">(</span><span class="n">YourUserClass</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">loggedInUser</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1">//we can now update the user with the user data...
@@ -1054,7 +1055,7 @@ You must replace <code>IA_PARTNER_CLIENT_SECRET_KEY</code> with your IA partner 
     <span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">You</span> <span class="n">will</span> <span class="n">probably</span> <span class="n">need</span> <span class="n">to</span> <span class="n">implement</span> 
+<span class="n">You</span> <span class="n">will</span> <span class="n">probably</span> <span class="n">need</span> <span class="n">to</span> <span class="n">implement</span>
 
 <span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onKeyboardFrameChange</span><span class="o">:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
 <span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onKeyboardShow</span><span class="o">:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
@@ -1447,8 +1448,28 @@ The Payment currency is the currency that you requested when you registered with
 <p>The callback is requested from IA platform in two conditions:</p>
 
 <p>1- When user approved the request over IA App, the Callback URL will be called with two parameters.
-2- when the user update any information partner website has access to it. </p>
-<h2 id='callback-when-user-approve-request-over-ia-app'>Callback when user approve request over IA App</h2><pre class="highlight php tab-php"><code>$authorizationCode = $_GET['code'];
+2- When user update any information in partner website.</p>
+<h2 id='callback-when-user-approve-request-over-ia-app'>Callback when user approve request over IA App</h2><pre class="highlight javascript tab-javascript"><code>
+<span class="c1">// cloud functions dependencies.</span>
+<span class="kr">const</span> <span class="nx">functions</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'firebase-functions'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+
+<span class="c1">// callback endpoint config.</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">authorizationCode</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">code</span><span class="p">;</span>
+  <span class="kr">const</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">state</span><span class="p">;</span>
+  <span class="kr">const</span> <span class="p">[</span> <span class="nx">userid</span><span class="p">,</span> <span class="nx">username</span><span class="p">,</span> <span class="nx">email</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'@@'</span><span class="p">);</span>
+
+  <span class="c1">// do some stuff with your received data.</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// send an OK response.</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="nx">exports</span><span class="p">.</span><span class="nx">yourCloudFunction</span> <span class="o">=</span> <span class="nx">functions</span><span class="p">.</span><span class="nx">https</span><span class="p">.</span><span class="nx">onRequest</span><span class="p">(</span><span class="nx">app</span><span class="p">);</span>
+</code></pre><pre class="highlight php tab-php"><code>$authorizationCode = $_GET['code'];
 $state = $_GET['state'];
 $stateArr = explode("@@", $state);
 $userid = $stateArr[0];
@@ -1472,7 +1493,22 @@ $email = $stateArr[2];
 <td>this string contains the userid, username and email concatenated with &#39;@@&#39;, you can split them and use them.</td>
 </tr>
 </tbody></table>
-<h2 id='callback-when-user-update-any-information-partner-website-has-access-to-it'>Callback when user update any information partner website has access to it</h2><pre class="highlight php tab-php"><code>$userId = $_POST['user_id'];
+<h2 id='callback-when-user-update-any-information'>Callback when user update any information</h2><pre class="highlight php tab-php"><code>$userId = $_POST['user_id'];
+</code></pre><pre class="highlight javascript tab-javascript"><code>
+<span class="c1">// ...</span>
+
+<span class="c1">// callback endpoint config.</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">userId</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">user_id</span><span class="p">;</span>
+
+  <span class="c1">// do some stuff with your received data.</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// send an OK response.</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// ...</span>
 </code></pre><h3 id='http-request-2'>HTTP Request</h3>
 <p><code>POST http://yourwebsite.com/yourCallBackurl</code></p>
 
@@ -1487,7 +1523,7 @@ $email = $stateArr[2];
 <td>the user id for the user who updated any associated info.</td>
 </tr>
 </tbody></table>
-<h2 id='fetching-token-for-this-user-from-ia-system'>fetching token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
+<h2 id='fetching-user-access-token-from-ia-api'>Fetching User Access Token from IA API</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
 $curl = curl_init('https://dashboard.instantaccess.io/api/oauth/token');
 
 // SET API request type as post
@@ -1512,6 +1548,49 @@ if($result !== FALSE) {
   $user__refresh_token = $data["refresh_token"];
   $user_access_token_expiry = $data["expires_in"];
 }
+</code></pre><pre class="highlight javascript tab-javascript"><code>
+<span class="c1">// ...</span>
+
+<span class="c1">// you may need a npm module to make HTTP requests...</span>
+<span class="kr">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'axios'</span><span class="p">);</span>
+
+<span class="c1">// ...and one npm module to parse the data you're going to POST.</span>
+<span class="kr">const</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'querystring'</span><span class="p">);</span>
+
+<span class="c1">// callback endpoint config.</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// data you're going to POST.</span>
+  <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">code</span><span class="p">:</span> <span class="s1">'the authorization code you received in previous step'</span><span class="p">,</span>
+    <span class="na">client_id</span><span class="p">:</span> <span class="s1">'&lt;YOUR-IA_PARTNER_CLIENT_ID_KEY&gt;'</span><span class="p">,</span>
+    <span class="na">client_secret</span><span class="p">:</span> <span class="s1">'&lt;YOUR-IA_PARTNER_CLIENT_SECRET_KEY&gt;'</span><span class="p">,</span>
+    <span class="na">redirect_uri</span><span class="p">:</span> <span class="s1">'your callback url (your cloud function url)'</span><span class="p">,</span>
+    <span class="na">grant_type</span><span class="p">:</span> <span class="s1">'authorization_code'</span>
+  <span class="p">};</span>
+
+  <span class="c1">// HTTP request configuration.</span>
+  <span class="kr">const</span> <span class="nx">fetchAccessTokenConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">url</span><span class="p">:</span> <span class="s1">'https://dashboard.instantaccess.io/api/oauth/token'</span><span class="p">,</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span>
+  <span class="p">};</span>
+
+  <span class="c1">// Instant Access API call.</span>
+  <span class="nx">http</span><span class="p">(</span><span class="nx">fetchAccessTokenConfig</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+      <span class="c1">// do some stuff with your received data.</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+
+    <span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+
+  <span class="c1">// send an OK response.</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// ...</span>
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -1525,7 +1604,7 @@ if($result !== FALSE) {
 <p>Please use the authorization code provided previously to fetch user access token and refresh token then save it in your users record. (database, files, ...etc)</p>
 
 <aside class="success">
-This token is required everytime your system requests user info from IA. 
+This token is required everytime your system requests user info from IA.
 </aside>
 <h3 id='http-request-3'>HTTP Request</h3>
 <p><code>POST https://dashboard.instantaccess.io/api/oauth/token</code></p>
@@ -1557,7 +1636,7 @@ This token is required everytime your system requests user info from IA.
 <td>always with string value &#39;authorization_code&#39;</td>
 </tr>
 </tbody></table>
-<h2 id='refreshing-access-token-for-this-user-from-ia-system'>Refreshing Access Token for this user from IA System</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
+<h2 id='refreshing-user-access-token-from-ia-api'>Refreshing User Access Token from IA API</h2><pre class="highlight php tab-php"><code>//setup the request, you can also use CURLOPT_URL
 $curl = curl_init('https://dashboard.instantaccess.io/api/oauth/token');
 
 // SET API request type as post
@@ -1582,6 +1661,31 @@ if($result !== FALSE) {
   $user__refresh_token = $data["refresh_token"];
   $user_access_token_expiry = $data["expires_in"];
 }
+</code></pre><pre class="highlight javascript tab-javascript"><code>
+<span class="c1">// same npm modules</span>
+<span class="c1">// ...</span>
+
+<span class="c1">// callback endpoint config.</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// the only thing that changes is the data you're going to POST.</span>
+  <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">refresh_token</span><span class="p">:</span> <span class="s1">'the authorization code you received in previous step'</span><span class="p">,</span>
+    <span class="na">client_id</span><span class="p">:</span> <span class="s1">'&lt;YOUR-IA_PARTNER_CLIENT_ID_KEY&gt;'</span><span class="p">,</span>
+    <span class="na">client_secret</span><span class="p">:</span> <span class="s1">'&lt;YOUR-IA_PARTNER_CLIENT_SECRET_KEY&gt;'</span><span class="p">,</span>
+    <span class="na">grant_type</span><span class="p">:</span> <span class="s1">'refresh_token'</span><span class="p">,</span>
+    <span class="na">scope</span><span class="p">:</span> <span class="s1">''</span>
+  <span class="p">};</span>
+
+  <span class="c1">// same config you used to fetch access token.</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// send an OK response.</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// ...</span>
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -1595,7 +1699,7 @@ if($result !== FALSE) {
 <p>Please use the refresh_token provided previously to fetch new user access token and refresh token then save it in your users record. (database, files, ...etc)</p>
 
 <aside class="success">
-This token is required everytime your system requests user info from IA. 
+This token is required everytime your system requests user info from IA.
 </aside>
 <h3 id='http-request-4'>HTTP Request</h3>
 <p><code>POST https://dashboard.instantaccess.io/api/oauth/token</code></p>
@@ -1624,10 +1728,10 @@ This token is required everytime your system requests user info from IA.
 </tr>
 <tr>
 <td>scope</td>
-<td>send it with empty string =&gt; &#39;&#39;</td>
+<td>send it with empty string &#39;&#39;</td>
 </tr>
 </tbody></table>
-<h2 id='fetch-user-information'>Fetch User Information</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
+<h2 id='fetching-user-information-from-ia-api'>Fetching User Information from IA API</h2><pre class="highlight php tab-php"><code>if($result !== FALSE) {
   $data = json_decode($result,true);
   $user_token = $data["access_token"];
 }
@@ -1656,6 +1760,44 @@ if($result !== FALSE) {
   // Save it in your DB is the best choice :)
   file_put_contents('ANY FILE PATH', json_encode($data));
 }
+</code></pre><pre class="highlight javascript tab-javascript"><code>
+<span class="c1">// ...</span>
+
+<span class="c1">// callback endpoint config.</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+  <span class="c1">// same config you used to fetch access token.</span>
+  <span class="c1">// ...</span>
+
+  <span class="c1">// and this new one.</span>
+  <span class="kr">const</span> <span class="nx">fetchUserInfoConfig</span> <span class="o">=</span> <span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">url</span><span class="p">:</span> <span class="s1">'https://dashboard.instantaccess.io/api/public/user'</span><span class="p">,</span>
+      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">,</span>
+        <span class="s1">'Authorization'</span><span class="p">:</span> <span class="s2">`Bearer </span><span class="p">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">access_token</span><span class="p">}</span><span class="s2">`</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="c1">// since we are using Promises,</span>
+  <span class="c1">// you can chain Instant Access API calls.</span>
+  <span class="nx">http</span><span class="p">(</span><span class="nx">fetchAccessTokenConfig</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">fetchUserInfoConfig</span><span class="p">(</span><span class="nx">response</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">const</span> <span class="p">{</span> <span class="nx">data</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+
+        <span class="c1">// do some stuff with your received data</span>
+        <span class="c1">// (e.g. save it in your database).</span>
+      <span class="p">}</span>
+    <span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+
+  <span class="c1">// send an OK response.</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// ...</span>
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -1664,9 +1806,10 @@ if($result !== FALSE) {
   </span><span class="s2">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
   </span><span class="s2">"message"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"User data items retrieved successfully"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"data"</span><span class="p">:[</span><span class="w">
-      </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+01111111111111"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"Email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test@test.com"</span><span class="p">,</span><span class="w">
-  </span><span class="p">],</span><span class="w">
+    </span><span class="p">{</span><span class="s2">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"First Name"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hey"</span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="s2">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Last Name"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Buddy"</span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="s2">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Emails"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test@test.com"</span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <p>Please use the user token to fetch user info from IA system. You can process these info as you usually do (e.g. save in database).</p>
@@ -1704,6 +1847,7 @@ You can fetch user info with the user token via this api call at anytime.
                 <a href="#" data-language-name="javascript--react">React</a>
                 <a href="#" data-language-name="objective_c">Objective-C</a>
                 <a href="#" data-language-name="php">PHP</a>
+                <a href="#" data-language-name="javascript">Google Cloud Functions</a>
           </div>
       </div>
     </div>
